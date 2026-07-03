@@ -40,14 +40,14 @@ const LandingNavbar = () => {
             : 'bg-transparent'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 h-[72px] flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-3.5 sm:px-8 h-[72px] flex items-center justify-between gap-1 sm:gap-4">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-violet-500/25 group-hover:shadow-violet-500/40 transition-shadow duration-300">
+          <Link to="/" className="flex items-center gap-2 group shrink min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-violet-500/25 group-hover:shadow-violet-500/40 transition-shadow duration-300 shrink-0">
               <span className="text-white font-bold text-sm">P</span>
             </div>
-            <span className="text-[15px] font-semibold text-white tracking-tight">
-              Portfolio<span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">Publisher</span>
+            <span className="text-sm sm:text-[15px] font-semibold text-white tracking-tight truncate">
+              Portfolio<span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">Pub</span><span className="hidden sm:inline text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">lisher</span>
             </span>
           </Link>
 
@@ -83,25 +83,33 @@ const LandingNavbar = () => {
             </MagneticButton>
           </div>
 
-          {/* Mobile Hamburger */}
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="md:hidden relative w-8 h-8 flex flex-col items-center justify-center gap-1.5"
-            aria-label="Toggle menu"
-          >
-            <motion.span
-              animate={mobileOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
-              className="block w-5 h-[1.5px] bg-white origin-center"
-            />
-            <motion.span
-              animate={mobileOpen ? { opacity: 0, x: -10 } : { opacity: 1, x: 0 }}
-              className="block w-5 h-[1.5px] bg-white"
-            />
-            <motion.span
-              animate={mobileOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
-              className="block w-5 h-[1.5px] bg-white origin-center"
-            />
-          </button>
+          {/* Mobile Right Action + Hamburger */}
+          <div className="flex md:hidden items-center gap-2 sm:gap-3">
+            <Link
+              to="/admin/signup"
+              className="landing-btn-primary text-xs font-semibold px-3.5 py-2 whitespace-nowrap shadow-md shadow-violet-500/20"
+            >
+              Sign Up
+            </Link>
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="relative w-8 h-8 flex flex-col items-center justify-center gap-1.5 focus:outline-none shrink-0"
+              aria-label="Toggle menu"
+            >
+              <motion.span
+                animate={mobileOpen ? { rotate: 45, y: 6 } : { rotate: 0, y: 0 }}
+                className="block w-5 h-[1.5px] bg-white origin-center"
+              />
+              <motion.span
+                animate={mobileOpen ? { opacity: 0, x: -10 } : { opacity: 1, x: 0 }}
+                className="block w-5 h-[1.5px] bg-white"
+              />
+              <motion.span
+                animate={mobileOpen ? { rotate: -45, y: -6 } : { rotate: 0, y: 0 }}
+                className="block w-5 h-[1.5px] bg-white origin-center"
+              />
+            </button>
+          </div>
         </div>
       </motion.header>
 
@@ -128,11 +136,12 @@ const LandingNavbar = () => {
               </motion.button>
             ))}
             <div className="mt-8 flex flex-col gap-3">
-              <Link to="/admin/login" className="text-center py-3 text-gray-400 border border-white/[0.1] rounded-xl hover:bg-white/5 transition-colors">
+              <Link
+                to="/admin/login"
+                onClick={() => setMobileOpen(false)}
+                className="text-center py-3.5 text-white font-medium bg-white/[0.05] border border-white/[0.1] rounded-xl hover:bg-white/10 transition-colors"
+              >
                 Sign in
-              </Link>
-              <Link to="/admin/signup" className="landing-btn-primary text-center py-3">
-                Create Free Portfolio
               </Link>
             </div>
           </motion.div>

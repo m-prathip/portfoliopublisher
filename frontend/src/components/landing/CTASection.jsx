@@ -38,14 +38,14 @@ const CTASection = () => (
           Join thousands of professionals who've elevated their career with a stunning portfolio. It takes less than 10 minutes. No credit card required.
         </p>
 
-        <div className="flex flex-wrap items-center justify-center gap-4">
-          <MagneticButton>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-xs sm:max-w-none mx-auto">
+          <MagneticButton className="w-full sm:w-auto">
             <Link
               to="/admin/signup"
-              className="landing-btn-primary text-base px-10 py-4 shadow-xl shadow-violet-500/25 hover:shadow-violet-500/40 transition-shadow duration-300"
+              className="landing-btn-primary text-sm sm:text-base px-8 sm:px-10 py-3.5 sm:py-4 shadow-xl shadow-violet-500/25 hover:shadow-violet-500/40 transition-shadow duration-300 w-full sm:w-auto flex items-center justify-center"
             >
-              Create Free Portfolio
-              <svg className="w-5 h-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <span>Create Free Portfolio</span>
+              <svg className="w-5 h-5 ml-1 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </Link>
@@ -58,7 +58,7 @@ const CTASection = () => (
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
-          className="flex items-center justify-center gap-6 mt-10 text-sm text-gray-500"
+          className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 mt-8 sm:mt-10 text-xs sm:text-sm text-gray-500"
         >
           <span className="flex items-center gap-1.5">
             <svg className="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

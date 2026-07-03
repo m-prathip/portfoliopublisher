@@ -337,8 +337,6 @@ const CONTENT_MAP = {
         {[
           { title: 'One Link Everywhere', desc: 'Generate your clean personal URL (portfoliopub.com/u/yourname) instantly upon publishing.' },
           { title: 'Dynamic Self-Drawing QR Code', desc: 'High-resolution vector QR code ready for business cards, resumes, and networking events.' },
-          { title: 'Real-Time Analytics Dashboard', desc: 'Track unique visitors, device breakdowns, and top-performing portfolio sections in real time.' },
-          { title: 'ATS-Friendly Resume Builder', desc: 'Export your interactive portfolio as a cleanly structured, recruiter-ready PDF resume.' },
         ].map((feat, i) => (
           <div key={i} className="p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-start gap-3">
             <span className="text-violet-400 font-bold">✓</span>

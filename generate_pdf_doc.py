@@ -136,7 +136,7 @@ def build_pdf():
         ("AI Engineers & Data Scientists", "Specialized machine learning project highlights, model accuracy metrics, and interactive neural network visualizers."),
         ("Students & Recent Graduates", "Academic achievement showcases, verified capstone project galleries, and instant QR codes for career fairs."),
         ("Recruiters & HR Managers", "Clean ATS-optimized executive timelines, 99% automated resume parse readability scores, and PDF export capabilities."),
-        ("Freelancers & Agency Creators", "Client testimonial carousels, dynamic pricing/service tiers, and instant WhatsApp/Email engagement funnels."),
+        ("Freelancers & Agency Creators", "Interactive project carousels, dynamic pricing/service tiers, and instant WhatsApp/Email engagement funnels."),
     ]
     for title, desc in audiences:
         story.append(Paragraph(f"• <b>{title}:</b> {desc}", styles['BulletText']))
@@ -202,10 +202,7 @@ d:\\projects\\portfolio-project\\frontend\\src\\
 |   |   |-- TemplatesSection.jsx     # Template Gallery with Filter Tags
 |   |   |-- TemplatePreviewModal.jsx # Live Template Walkthrough Modal
 |   |   |-- AIPortfolioSection.jsx   # AI Generator Feature Highlight
-|   |   |-- ResumeBuilderSection.jsx # ATS Resume Builder View
 |   |   |-- QRGeneratorSection.jsx   # Instant Personal URL & QR Code Showcase
-|   |   |-- AnalyticsDashboard.jsx   # Recruiter Engagement Metrics View
-|   |   |-- TestimonialsSection.jsx  # Client & Recruiter Social Proof Carousel
 |   |   |-- FAQSection.jsx           # Interactive Accordion FAQ
 |   |   |-- CTASection.jsx           # High-Conversion Bottom Call-To-Action
 |   |   |-- FooterSection.jsx        # Footer with Email Icon & Modal Triggers

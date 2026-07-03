@@ -18,14 +18,14 @@ const TEMPLATES = [
     category: 'Creative',
     gradient: 'from-violet-900/40 to-indigo-900/40',
     accent: '#ec4899',
-    sections: ['Hero', 'Gallery', 'Testimonials'],
+    sections: ['Hero', 'Gallery', 'Projects'],
   },
   {
     name: 'Corporate Edge',
     category: 'Professional',
     gradient: 'from-blue-900/40 to-cyan-900/40',
     accent: '#3b82f6',
-    sections: ['Summary', 'Skills', 'Resume'],
+    sections: ['Summary', 'Skills', 'Experience'],
   },
   {
     name: 'Dev Terminal',

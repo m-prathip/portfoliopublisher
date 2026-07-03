@@ -31,8 +31,6 @@ const PLANS = [
       'Custom domain support',
       'All premium templates',
       'AI portfolio generator',
-      'Advanced analytics dashboard',
-      'Resume builder & PDF export',
       'Priority support',
     ],
     cta: 'Start Pro Trial',
