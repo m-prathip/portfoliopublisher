@@ -46,8 +46,8 @@ const LandingNavbar = () => {
             <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-violet-500/25 group-hover:shadow-violet-500/40 transition-shadow duration-300 shrink-0">
               <span className="text-white font-bold text-sm">P</span>
             </div>
-            <span className="text-sm sm:text-[15px] font-semibold text-white tracking-tight truncate">
-              Portfolio<span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">Pub</span><span className="hidden sm:inline text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">lisher</span>
+            <span className="text-sm sm:text-[15px] font-semibold text-white tracking-tight whitespace-nowrap">
+              Portfolio<span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">Publisher</span>
             </span>
           </Link>
 
@@ -84,18 +84,12 @@ const LandingNavbar = () => {
           </div>
 
           {/* Mobile Right Action + Hamburger */}
-          <div className="flex md:hidden items-center gap-1 sm:gap-2.5 shrink-0">
+          <div className="flex md:hidden items-center gap-2 sm:gap-2.5 shrink-0">
             <Link
               to="/admin/login"
-              className="text-xs text-gray-300 hover:text-white font-medium px-2 py-1.5 transition-colors whitespace-nowrap"
+              className="landing-btn-primary text-xs font-semibold px-3.5 py-1.5 whitespace-nowrap shadow-md shadow-violet-500/20"
             >
               Sign in
-            </Link>
-            <Link
-              to="/admin/signup"
-              className="landing-btn-primary text-xs font-semibold px-3 py-1.5 whitespace-nowrap shadow-md shadow-violet-500/20"
-            >
-              Sign Up
             </Link>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -145,16 +139,9 @@ const LandingNavbar = () => {
               <Link
                 to="/admin/login"
                 onClick={() => setMobileOpen(false)}
-                className="text-center py-3.5 text-white font-medium bg-white/[0.05] border border-white/[0.1] rounded-xl hover:bg-white/10 transition-colors"
-              >
-                Sign in
-              </Link>
-              <Link
-                to="/admin/signup"
-                onClick={() => setMobileOpen(false)}
                 className="landing-btn-primary text-center py-3.5 font-semibold shadow-lg shadow-violet-500/20"
               >
-                Create Free Portfolio
+                Sign in
               </Link>
             </div>
           </motion.div>
