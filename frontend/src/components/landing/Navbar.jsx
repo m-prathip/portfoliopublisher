@@ -139,9 +139,16 @@ const LandingNavbar = () => {
               <Link
                 to="/admin/login"
                 onClick={() => setMobileOpen(false)}
-                className="landing-btn-primary text-center py-3.5 font-semibold shadow-lg shadow-violet-500/20"
+                className="text-center py-3.5 text-white font-medium bg-white/[0.05] border border-white/[0.1] rounded-xl hover:bg-white/10 transition-colors"
               >
                 Sign in
+              </Link>
+              <Link
+                to="/admin/signup"
+                onClick={() => setMobileOpen(false)}
+                className="landing-btn-primary text-center py-3.5 font-semibold shadow-lg shadow-violet-500/20"
+              >
+                Sign Up
               </Link>
             </div>
           </motion.div>
