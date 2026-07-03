@@ -84,10 +84,16 @@ const LandingNavbar = () => {
           </div>
 
           {/* Mobile Right Action + Hamburger */}
-          <div className="flex md:hidden items-center gap-2 sm:gap-3">
+          <div className="flex md:hidden items-center gap-1 sm:gap-2.5 shrink-0">
+            <Link
+              to="/admin/login"
+              className="text-xs text-gray-300 hover:text-white font-medium px-2 py-1.5 transition-colors whitespace-nowrap"
+            >
+              Sign in
+            </Link>
             <Link
               to="/admin/signup"
-              className="landing-btn-primary text-xs font-semibold px-3.5 py-2 whitespace-nowrap shadow-md shadow-violet-500/20"
+              className="landing-btn-primary text-xs font-semibold px-3 py-1.5 whitespace-nowrap shadow-md shadow-violet-500/20"
             >
               Sign Up
             </Link>
@@ -142,6 +148,13 @@ const LandingNavbar = () => {
                 className="text-center py-3.5 text-white font-medium bg-white/[0.05] border border-white/[0.1] rounded-xl hover:bg-white/10 transition-colors"
               >
                 Sign in
+              </Link>
+              <Link
+                to="/admin/signup"
+                onClick={() => setMobileOpen(false)}
+                className="landing-btn-primary text-center py-3.5 font-semibold shadow-lg shadow-violet-500/20"
+              >
+                Create Free Portfolio
               </Link>
             </div>
           </motion.div>
