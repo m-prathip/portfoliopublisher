@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Otp = require('../models/Otp');
 const LoginActivity = require('../models/LoginActivity');
@@ -6,6 +7,7 @@ const otpUtil = require('../utils/otp');
 const tokenUtil = require('../utils/token');
 const { parseUserAgent, getClientIp } = require('../utils/device');
 const { sendMail, emails } = require('../utils/email');
+const lockout = require('../middleware/lockout');
 
 const publicUser = (u) => ({
   id: u._id, email: u.email, username: u.username,
@@ -177,7 +179,26 @@ const login = async (req, res) => {
 
     if (!user || !(await user.matchPassword(password))) {
       LoginActivity.create({ ...logBase, email: clean, event: 'login_failed', reason: 'invalid_credentials' }).catch(() => {});
+      
+      const record = lockout.recordFailedAttempt(ip);
+      if (user && record.count === lockout.MAX_ATTEMPTS) {
+        // Trigger a silent reset email on 5th failed attempt
+        createAndSendOtp({ user, email: user.email, purpose: 'reset' }).catch(() => {});
+        LoginActivity.create({ ...logBase, user: user._id, email: user.email, event: 'account_locked', reason: 'too_many_attempts' }).catch(() => {});
+      }
+      
       return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Reset failed attempts on successful login
+    lockout.resetFailedAttempts(ip);
+
+    // MIGRATION LOGIC: Re-hash legacy plain-text or weak hashes
+    if (!user.password.startsWith('$2') || bcrypt.getRounds(user.password) < 12) {
+      user.password = password;
+      // Pre-save hook will hash it with cost 12
+      // passwordChangedAt will be updated, implicitly revoking old tokens, which is a good security measure.
+      await user.save();
     }
 
     if (!user.isVerified) {

@@ -2,7 +2,8 @@ const router = require('express').Router();
 const { body, param } = require('express-validator');
 const validate = require('../middleware/validate');
 const { protect } = require('../middleware/auth');
-const { authLimiter, otpLimiter, forgotLimiter } = require('../middleware/rateLimiters');
+const { authLimiter, loginLimiter, otpLimiter, forgotLimiter } = require('../middleware/rateLimiters');
+const { checkLockout } = require('../middleware/lockout');
 const User = require('../models/User');
 const ctrl = require('../controllers/authController');
 
@@ -30,7 +31,7 @@ router.post('/register', authLimiter, registerRules, validate, ctrl.register);
 router.post('/verify-email', otpLimiter, [emailRule, codeRule], validate, ctrl.verifyEmail);
 router.post('/resend-otp', forgotLimiter, [emailRule], validate, ctrl.resendOtp);
 
-router.post('/login', authLimiter, loginRules, validate, ctrl.login);
+router.post('/login', loginLimiter, checkLockout, loginRules, validate, ctrl.login);
 router.post('/refresh', ctrl.refresh);
 router.post('/logout', ctrl.logout);
 

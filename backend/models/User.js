@@ -59,17 +59,33 @@ const userSchema = new mongoose.Schema({
   lastLoginAt: { type: Date }
 }, { timestamps: true });
 
-// Hash password before save
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
-  const salt = await bcrypt.genSalt(10);
+  const salt = await bcrypt.genSalt(12);
   this.password = await bcrypt.hash(this.password, salt);
   if (!this.isNew) this.passwordChangedAt = new Date();
   next();
 });
 
 userSchema.methods.matchPassword = async function (entered) {
-  return bcrypt.compare(entered, this.password);
+  const isBcrypt = this.password && this.password.startsWith('$2');
+  if (isBcrypt) {
+    return bcrypt.compare(entered, this.password);
+  }
+
+  // Legacy plain-text or unsupported hash fallback (for migration)
+  // Constant-time comparison to prevent timing attacks
+  const crypto = require('crypto');
+  const enteredBuf = Buffer.from(entered);
+  const storedBuf = Buffer.from(this.password);
+  
+  if (enteredBuf.length === storedBuf.length) {
+    return crypto.timingSafeEqual(enteredBuf, storedBuf);
+  } else {
+    // Perform a dummy comparison to mitigate timing variations based on length
+    crypto.timingSafeEqual(enteredBuf, enteredBuf);
+    return false;
+  }
 };
 
 // True if the token was issued before the password was last changed.

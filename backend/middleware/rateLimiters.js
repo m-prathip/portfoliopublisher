@@ -11,6 +11,15 @@ const authLimiter = rateLimit({
   handler: json('Too many attempts. Please try again in a few minutes.')
 });
 
+// Specific strict limiter for /login endpoint
+const loginLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10, // 10 requests per minute per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: json('Too many login attempts. Please try again in a minute.')
+});
+
 // OTP verification: tighter, per-IP, to slow code-guessing.
 const otpLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -29,4 +38,4 @@ const forgotLimiter = rateLimit({
   handler: json('Too many requests. Please try again later.')
 });
 
-module.exports = { authLimiter, otpLimiter, forgotLimiter };
+module.exports = { authLimiter, loginLimiter, otpLimiter, forgotLimiter };
