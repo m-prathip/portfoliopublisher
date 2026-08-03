@@ -86,7 +86,7 @@ const LandingNavbar = () => {
           {/* Mobile Right Action + Hamburger */}
           <div className="flex md:hidden items-center gap-2 sm:gap-2.5 shrink-0">
             <Link
-              to={`/${user.username}-${user.dashboardHash}/profile`}
+              to="/auth/login"
               className="landing-btn-primary text-xs font-semibold px-3.5 py-1.5 whitespace-nowrap shadow-md shadow-violet-500/20"
             >
               Sign in
