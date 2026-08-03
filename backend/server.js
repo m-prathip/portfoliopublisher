@@ -28,11 +28,11 @@ app.use(helmet({
 }));
 
 // ─── CORS (fixed) ──────────────────────────────────────
-// The old config used origin '*' WITH credentials:true, which is invalid
-// and insecure. We now allow only the known frontend origin(s) and only
-// then enable credentials (needed for the refresh-token cookie).
-const allowedOrigins = (process.env.FRONTEND_URL || 'https://portfoliopublisher.vercel.app')
-  .split(',')
+// Allow the known frontend origins. If FRONTEND_URL is set, it adds those,
+// but we explicitly include the Vercel app domain to prevent lockouts.
+const envOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [];
+const defaultOrigins = ['https://portfoliopublisher.vercel.app', 'http://localhost:5173'];
+const allowedOrigins = [...envOrigins, ...defaultOrigins]
   .map((o) => o.trim().replace(/\/$/, ''));
 
 app.use(cors({
