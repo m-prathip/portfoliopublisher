@@ -36,7 +36,7 @@ const VerifyEmail = () => {
     if (code.length !== 6) return toast.error('Enter the 6-digit code');
     setLoading(true);
     try {
-      await verifyEmail(email, code);
+      const res = await verifyEmail(email, code);
       toast.success('Email verified — welcome!');
       const { user: loggedInUser } = res;
       navigate(`/${loggedInUser.username}-${loggedInUser.dashboardHash}/profile`, { replace: true });
