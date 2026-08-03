@@ -14,13 +14,26 @@ export const getAccessToken = () => accessToken;
 const api = axios.create({
   baseURL: `${BASE_URL}/api`,
   headers: { 'Content-Type': 'application/json' },
-  withCredentials: true // send/receive the refresh cookie
+  withCredentials: true, // send/receive the refresh cookie
+  timeout: 10000 // 10 second timeout
 });
 
 // Bare client for refresh (avoids the interceptor loop below).
 const refreshClient = axios.create({ baseURL: `${BASE_URL}/api`, withCredentials: true });
 
+// Simple memory cache for GET requests (1-minute TTL)
+const apiCache = new Map();
+
 api.interceptors.request.use((config) => {
+  if (config.method === 'get') {
+    const key = config.url;
+    if (apiCache.has(key)) {
+      const cached = apiCache.get(key);
+      if (Date.now() - cached.timestamp < 60000) {
+        config.adapter = () => Promise.resolve({ data: cached.data, status: 200, statusText: 'OK', headers: {}, config, request: {} });
+      }
+    }
+  }
   if (accessToken) config.headers.Authorization = `Bearer ${accessToken}`;
   return config;
 });
@@ -28,7 +41,12 @@ api.interceptors.request.use((config) => {
 // On 401, try a single silent refresh, then replay the original request.
 let refreshing = null;
 api.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    if (res.config.method === 'get') {
+      apiCache.set(res.config.url, { data: res.data, timestamp: Date.now() });
+    }
+    return res;
+  },
   async (err) => {
     const original = err.config;
     const status = err.response?.status;
@@ -48,10 +66,10 @@ api.interceptors.response.use(
       } catch (e) {
         refreshing = null;
         setAccessToken(null);
-        if (typeof window !== 'undefined' &&
-            window.location.pathname.startsWith('/admin') &&
-            window.location.pathname !== '/admin/login') {
-          window.location.href = '/admin/login';
+        if (typeof window !== 'undefined' && 
+            window.location.pathname !== '/auth/login' && 
+            !window.location.pathname.startsWith('/u/')) {
+          window.location.href = '/auth/login';
         }
         return Promise.reject(e);
       }

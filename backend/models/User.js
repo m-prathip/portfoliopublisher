@@ -42,6 +42,7 @@ const userSchema = new mongoose.Schema({
     match: [USERNAME_REGEX, 'Username must be 3-30 characters: lowercase letters, numbers, and hyphens only']
   },
   email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+  dashboardHash: { type: String, unique: true },
   // select:false → password is never returned unless explicitly asked for
   // with .select('+password'). Prevents accidental hash leakage.
   password: { type: String, required: true, minlength: 8, select: false },
@@ -60,6 +61,11 @@ const userSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {
+  if (this.isNew && !this.dashboardHash) {
+    const crypto = require('crypto');
+    this.dashboardHash = crypto.randomBytes(4).toString('hex'); // 8 characters
+  }
+  
   if (!this.isModified('password')) return next();
   const salt = await bcrypt.genSalt(12);
   this.password = await bcrypt.hash(this.password, salt);

@@ -166,7 +166,7 @@ const TemplatePreviewModal = ({ isOpen, onClose, template }) => {
             </div>
             <div className="flex items-center gap-3">
               <Link
-                to="/admin/signup"
+                to="/auth/signup"
                 className="px-4 py-1.5 rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-500 hover:to-blue-500 text-white font-semibold text-xs shadow-lg shadow-violet-500/20 transition-all flex items-center gap-1.5"
               >
                 <span>Use Template</span>
@@ -354,7 +354,7 @@ const TemplatePreviewModal = ({ isOpen, onClose, template }) => {
                 Close Preview
               </button>
               <Link
-                to="/admin/signup"
+                to="/auth/signup"
                 className="px-5 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-bold text-xs shadow-lg shadow-violet-600/30 transition-all text-center w-full sm:w-auto"
               >
                 Create My Portfolio With {template.name} →

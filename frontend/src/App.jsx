@@ -55,16 +55,16 @@ const App = () => (
               <Route path="/privacy" element={<Privacy />} />
 
               {/* Auth */}
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin/signup" element={<AdminSignup />} />
-              <Route path="/admin/verify-email" element={<VerifyEmail />} />
-              <Route path="/admin/forgot-password" element={<ForgotPassword />} />
-              <Route path="/admin/reset-password" element={<ResetPassword />} />
+              <Route path="/auth/login" element={<AdminLogin />} />
+              <Route path="/auth/signup" element={<AdminSignup />} />
+              <Route path="/auth/verify-email" element={<VerifyEmail />} />
+              <Route path="/auth/forgot-password" element={<ForgotPassword />} />
+              <Route path="/auth/reset-password" element={<ResetPassword />} />
 
-              {/* Admin dashboard */}
-              <Route path="/admin" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
-                <Route index element={<Navigate to="/admin/profile" replace />} />
-                <Route path="dashboard" element={<Navigate to="/admin/profile" replace />} />
+              {/* Unique User Dashboard */}
+              <Route path="/:dashboardId" element={<ProtectedRoute><AdminLayout /></ProtectedRoute>}>
+                <Route index element={<Navigate to="profile" replace />} />
+                <Route path="dashboard" element={<Navigate to="profile" replace />} />
                 <Route path="profile" element={<AdminProfile />} />
                 <Route path="share" element={<AdminShare />} />
                 <Route path="education" element={<AdminEducation />} />

@@ -4,7 +4,7 @@ const createCRUD = (Model) => ({
   // The logged-in user's own items, for the admin dashboard list/edit views
   getMine: async (req, res) => {
     try {
-      const items = await Model.find({ user: req.user.id }).sort({ order: 1, createdAt: -1 });
+      const items = await Model.find({ user: req.user.id }).sort({ order: 1, createdAt: -1 }).lean();
       res.json(items);
     } catch (err) { res.status(500).json({ message: err.message }); }
   },
@@ -12,7 +12,7 @@ const createCRUD = (Model) => ({
   // attached by the resolveUser middleware before this ever runs)
   getPublic: async (req, res) => {
     try {
-      const items = await Model.find({ user: req.portfolioUser._id }).sort({ order: 1, createdAt: -1 });
+      const items = await Model.find({ user: req.portfolioUser._id }).sort({ order: 1, createdAt: -1 }).lean();
       res.json(items);
     } catch (err) { res.status(500).json({ message: err.message }); }
   },

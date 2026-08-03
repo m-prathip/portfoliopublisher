@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const mongoSanitize = require('express-mongo-sanitize');
 const dotenv = require('dotenv');
 const path = require('path');
+const compression = require('compression');
 
 const connectDB = require('./config/db');
 
@@ -30,7 +31,7 @@ app.use(helmet({
 // The old config used origin '*' WITH credentials:true, which is invalid
 // and insecure. We now allow only the known frontend origin(s) and only
 // then enable credentials (needed for the refresh-token cookie).
-const allowedOrigins = (process.env.FRONTEND_URL || 'https://portfolio-project-prathip.vercel.app')
+const allowedOrigins = (process.env.FRONTEND_URL || 'https://portfoliopublisher.vercel.app')
   .split(',')
   .map((o) => o.trim().replace(/\/$/, ''));
 
@@ -44,7 +45,8 @@ app.use(cors({
   credentials: true
 }));
 
-// ─── Body parsing & sanitization ───────────────────────
+// ─── Body parsing, compression & sanitization ──────────
+app.use(compression());
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 app.use(cookieParser());

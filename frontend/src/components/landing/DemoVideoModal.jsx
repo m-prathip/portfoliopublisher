@@ -114,7 +114,7 @@ const DemoVideoModal = ({ isOpen, onClose }) => {
                 <FiExternalLink />
               </Link>
               <Link
-                to="/admin/signup"
+                to="/auth/signup"
                 onClick={onClose}
                 className="px-5 py-2 rounded-lg bg-gradient-to-r from-violet-600 via-pink-600 to-amber-500 hover:opacity-95 text-white font-bold text-xs shadow-lg shadow-violet-600/30 transition-all text-center w-full sm:w-auto"
               >

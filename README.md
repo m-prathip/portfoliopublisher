@@ -80,12 +80,12 @@ npm run dev
 
 There's no separate "admin setup" step anymore — anyone can create an account:
 
-1. Visit `https://portfolio-project-prathip.vercel.app`
+1. Visit `https://portfoliopublisher.vercel.app`
 2. Pick a username (this becomes your permanent portfolio URL), email, and password
 3. You're redirected straight to **Share Your Portfolio**, showing your link and QR code
 
-Visit `https://portfolio-project-prathip.vercel.app` for the publisher homepage, `https://portfolio-project-prathip.vercel.app/u/<username>`
-for any published portfolio, and `https://portfolio-project-prathip.vercel.app` for the dashboard.
+Visit `https://portfoliopublisher.vercel.app` for the publisher homepage, `https://portfoliopublisher.vercel.app/u/<username>`
+for any published portfolio, and `https://portfoliopublisher.vercel.app` for the dashboard.
 
 ---
 
@@ -200,7 +200,7 @@ PORT=5000
 MONGO_URI=mongodb+srv://<user>:<pass>@cluster0.mongodb.net/portfolio
 JWT_SECRET=super_secret_random_string_here
 NODE_ENV=development
-FRONTEND_URL=https://portfolio-project-prathip.vercel.app
+FRONTEND_URL=https://portfoliopublisher.vercel.app
 ```
 
 **Frontend `.env`**

@@ -20,15 +20,17 @@ const AdminLogin = () => {
       const res = await login(form.identifier, form.password, form.remember);
       if (res.requiresVerification) {
         toast('Please verify your email to continue', { icon: '✉️' });
-        return navigate('/admin/verify-email', { state: { email: res.email } });
+        return navigate('/auth/verify-email', { state: { email: res.email } });
       }
+      
+      const { user: loggedInUser } = res;
       toast.success('Welcome back!');
-      navigate('/admin/dashboard');
+      navigate(`/${loggedInUser.username}-${loggedInUser.dashboardHash}/profile`);
     } catch (err) {
       const data = err.response?.data;
       if (data?.requiresVerification) {
         toast('Please verify your email first', { icon: '✉️' });
-        return navigate('/admin/verify-email', { state: { email: data.email } });
+        return navigate('/auth/verify-email', { state: { email: data.email } });
       }
       toast.error(data?.message || 'Invalid credentials');
     } finally {
@@ -42,7 +44,7 @@ const AdminLogin = () => {
       title="Welcome Back"
       subtitle="Sign in to manage your portfolio"
       footer={<>New here?{' '}
-        <Link to="/admin/signup" className="text-primary-600 dark:text-primary-400 font-medium hover:underline">Create your portfolio</Link>
+        <Link to="/auth/signup" className="text-primary-600 dark:text-primary-400 font-medium hover:underline">Create your portfolio</Link>
       </>}
     >
       <form onSubmit={handle} className="space-y-5">
@@ -76,7 +78,7 @@ const AdminLogin = () => {
               className="rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
             Remember me
           </label>
-          <Link to="/admin/forgot-password" className="text-primary-600 dark:text-primary-400 font-medium hover:underline">
+          <Link to="/auth/forgot-password" className="text-primary-600 dark:text-primary-400 font-medium hover:underline">
             Forgot password?
           </Link>
         </div>

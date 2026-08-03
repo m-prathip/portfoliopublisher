@@ -1,37 +1,36 @@
-import { useState, useEffect } from 'react';
-import { Link, useNavigate, Outlet, NavLink } from 'react-router-dom';
+import { useState } from 'react';
+import { NavLink, Outlet, useNavigate, useParams, Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import ThemeSwitcher from '../../components/common/ThemeSwitcher';
 import { profileAPI } from '../../services/api';
-import { FiHome, FiUser, FiBookOpen, FiBriefcase, FiCode, FiAward, FiActivity, FiLogOut, FiSun, FiMoon, FiMenu, FiX, FiGlobe, FiShare2, FiFileText } from 'react-icons/fi';
+import { FiHome, FiUser, FiBookOpen, FiBriefcase, FiCode, FiAward, FiActivity, FiLogOut, FiSun, FiMoon, FiMenu, FiShare2, FiFileText, FiGlobe } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
-const adminNav = [
-  { to: '/admin/profile', icon: <FiUser size={18} />, label: 'Profile' },
-  { to: '/admin/share', icon: <FiShare2 size={18} />, label: 'Share' },
-  { to: '/admin/education', icon: <FiBookOpen size={18} />, label: 'Education' },
-  { to: '/admin/experience', icon: <FiBriefcase size={18} />, label: 'Experience' },
-  { to: '/admin/projects', icon: <FiCode size={18} />, label: 'Projects' },
-  { to: '/admin/skills', icon: <FiActivity size={18} />, label: 'Skills' },
-  { to: '/admin/whyhire', icon: <FiAward size={18} />, label: 'Why Hire Me' },
-  { to: '/admin/achievements', icon: <FiAward size={18} />, label: 'Achievements' },
-  { to: '/admin/activities', icon: <FiGlobe size={18} />, label: 'Activities' },
-  { to: '/admin/certificates', icon: <FiFileText size={18} />, label: 'Certificates' },
+const NAV_ITEMS = [
+  { to: 'profile', icon: <FiUser size={18} />, label: 'Profile' },
+  { to: 'share', icon: <FiShare2 size={18} />, label: 'Share' },
+  { to: 'education', icon: <FiBookOpen size={18} />, label: 'Education' },
+  { to: 'experience', icon: <FiBriefcase size={18} />, label: 'Experience' },
+  { to: 'projects', icon: <FiCode size={18} />, label: 'Projects' },
+  { to: 'skills', icon: <FiActivity size={18} />, label: 'Skills' },
+  { to: 'whyhire', icon: <FiAward size={18} />, label: 'Why Hire Me' },
+  { to: 'achievements', icon: <FiAward size={18} />, label: 'Achievements' },
+  { to: 'activities', icon: <FiGlobe size={18} />, label: 'Activities' },
+  { to: 'certificates', icon: <FiFileText size={18} />, label: 'Certificates' },
 ];
 
 const AdminLayout = () => {
-  console.log("AdminLayout Render");
-
   const { logout, user } = useAuth();
   const { dark, toggle } = useTheme();
+  const { dashboardId } = useParams();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
     toast.success('Logged out');
-    navigate('/admin/login');
+    navigate('/auth/login');
   };
 
   const handleThemeChange = async (t) => {
@@ -70,8 +69,8 @@ const AdminLayout = () => {
         {user?.username && <p className="text-xs text-primary-600 dark:text-primary-400 truncate">@{user.username}</p>}
       </div>
       <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-        {adminNav.map(item => (
-          <NavLink key={item.to} to={item.to} className={linkCls} onClick={() => setSidebarOpen(false)}>
+        {NAV_ITEMS.map(item => (
+          <NavLink key={item.to} to={`/${dashboardId}/${item.to}`} className={linkCls} onClick={() => setSidebarOpen(false)}>
             {item.icon} {item.label}
           </NavLink>
         ))}
@@ -91,10 +90,8 @@ const AdminLayout = () => {
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Desktop Sidebar */}
       <Sidebar />
 
-      {/* Mobile Overlay */}
       {sidebarOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => setSidebarOpen(false)} />
@@ -102,9 +99,7 @@ const AdminLayout = () => {
         </div>
       )}
 
-      {/* Main */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {/* Header */}
         <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between">
           <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
             <FiMenu size={20} />
@@ -118,7 +113,6 @@ const AdminLayout = () => {
           </div>
         </header>
 
-        {/* Page Content */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6">
           <Outlet />
         </main>

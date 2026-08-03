@@ -22,7 +22,7 @@ const VerifyEmail = () => {
   const timer = useRef(null);
 
   useEffect(() => {
-    if (!email) navigate('/admin/signup', { replace: true });
+    if (!email) navigate('/auth/signup', { replace: true });
   }, [email, navigate]);
 
   useEffect(() => {
@@ -38,7 +38,8 @@ const VerifyEmail = () => {
     try {
       await verifyEmail(email, code);
       toast.success('Email verified — welcome!');
-      navigate('/admin/share', { replace: true });
+      const { user: loggedInUser } = res;
+      navigate(`/${loggedInUser.username}-${loggedInUser.dashboardHash}/profile`, { replace: true });
     } catch (err) {
       toast.error(err.response?.data?.message || 'Verification failed');
     } finally {
@@ -64,7 +65,7 @@ const VerifyEmail = () => {
       icon={<FiMail size={28} />}
       title="Verify your email"
       subtitle={<>We sent a 6-digit code to <span className="font-medium text-gray-700 dark:text-gray-300">{email}</span></>}
-      footer={<Link to="/admin/login" className="text-primary-600 dark:text-primary-400 font-medium hover:underline">Back to sign in</Link>}
+      footer={<Link to="/auth/login" className="text-primary-600 dark:text-primary-400 font-medium hover:underline">Back to sign in</Link>}
     >
       <form onSubmit={submit} className="space-y-6">
         <OtpInput value={code} onChange={setCode} />

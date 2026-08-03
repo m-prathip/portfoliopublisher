@@ -110,7 +110,7 @@ const HeroSection = () => {
       >
         <MagneticButton className="w-full sm:w-auto">
           <Link
-            to="/admin/signup"
+            to="/auth/signup"
             className="landing-btn-primary text-sm sm:text-base px-6 py-3.5 sm:px-8 sm:py-4 shadow-xl shadow-violet-500/20 hover:shadow-violet-500/40 transition-shadow duration-300 w-full sm:w-auto flex items-center justify-center"
           >
             <span>Create Free Portfolio</span>

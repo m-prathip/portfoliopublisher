@@ -11,7 +11,7 @@ const lockout = require('../middleware/lockout');
 
 const publicUser = (u) => ({
   id: u._id, email: u.email, username: u.username,
-  role: u.role, isVerified: u.isVerified
+  role: u.role, isVerified: u.isVerified, dashboardHash: u.dashboardHash
 });
 
 // ── helpers ────────────────────────────────────────────
@@ -29,6 +29,12 @@ async function issueSession(user, req, res, { remember = false } = {}) {
   if (user.refreshTokens.length > 10) {
     user.refreshTokens = user.refreshTokens.slice(-10);
   }
+  
+  if (!user.dashboardHash) {
+    const crypto = require('crypto');
+    user.dashboardHash = crypto.randomBytes(4).toString('hex');
+  }
+  
   await user.save();
   res.cookie(tokenUtil.REFRESH_COOKIE, raw, tokenUtil.refreshCookieOptions(remember));
   return tokenUtil.signAccessToken(user);
@@ -175,7 +181,7 @@ const login = async (req, res) => {
   try {
     const clean = String(identifier).toLowerCase().trim();
     const user = await User.findOne({ $or: [{ email: clean }, { username: clean }] })
-      .select('+password +refreshTokens');
+      .select('+password +refreshTokens dashboardHash');
 
     if (!user || !(await user.matchPassword(password))) {
       LoginActivity.create({ ...logBase, email: clean, event: 'login_failed', reason: 'invalid_credentials' }).catch(() => {});
@@ -214,6 +220,12 @@ const login = async (req, res) => {
       sendMail({ to: user.email, ...emails.loginAlert(device, ip, new Date().toUTCString()) }).catch(() => { });
     }
 
+    if (!user.dashboardHash) {
+      const crypto = require('crypto');
+      user.dashboardHash = crypto.randomBytes(4).toString('hex');
+      await user.save();
+    }
+
     user.lastLoginAt = new Date();
     const accessToken = await issueSession(user, req, res, { remember: !!remember });
     LoginActivity.create({ ...logBase, user: user._id, email: user.email, event: 'login_success' }).catch(() => {});
@@ -232,7 +244,7 @@ const refresh = async (req, res) => {
 
     const userId = tokenUtil.refreshUserId(raw);
     const hash = tokenUtil.hashRefreshToken(raw);
-    const user = await User.findById(userId).select('+refreshTokens');
+    const user = await User.findById(userId).select('+refreshTokens dashboardHash');
     if (!user) return res.status(401).json({ message: 'Invalid session' });
 
     const idx = user.refreshTokens.findIndex((t) => t.tokenHash === hash);
@@ -251,6 +263,12 @@ const refresh = async (req, res) => {
 
     // Rotate: remove old, issue new.
     user.refreshTokens.splice(idx, 1);
+    
+    if (!user.dashboardHash) {
+      const crypto = require('crypto');
+      user.dashboardHash = crypto.randomBytes(4).toString('hex');
+    }
+    
     const accessToken = await issueSession(user, req, res);
     res.json({ token: accessToken, user: publicUser(user) });
   } catch (error) {

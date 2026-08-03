@@ -159,7 +159,7 @@ const PricingSection = () => {
                   {/* CTA */}
                   <MagneticButton className="w-full">
                     <Link
-                      to="/admin/signup"
+                      to="/auth/signup"
                       className={`block w-full text-center py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
                         plan.popular
                           ? 'landing-btn-primary'

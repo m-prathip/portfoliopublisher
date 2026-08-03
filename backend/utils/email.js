@@ -8,7 +8,7 @@ const client = new brevo.BrevoClient({
 
 const FROM = process.env.EMAIL_FROM || 'Portfolio Publisher <no-reply@yourapp.com>';
 const BRAND = (FROM.match(/^"?([^"<]+?)"?\s*</) || [, 'Portfolio Publisher'])[1].trim();
-const FRONTEND_URL = (process.env.FRONTEND_URL || 'https://portfolio-project-prathip.vercel.app').split(',')[0].replace(/\/$/, '');
+const FRONTEND_URL = (process.env.FRONTEND_URL || 'https://portfoliopublisher.vercel.app').split(',')[0].replace(/\/$/, '');
 
 
 /**

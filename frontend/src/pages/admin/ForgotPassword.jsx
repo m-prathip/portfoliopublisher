@@ -19,7 +19,7 @@ const ForgotPassword = () => {
     try {
       await authAPI.forgotPassword({ email: email.trim() });
       toast.success('If that email is registered, a code is on its way');
-      navigate('/admin/reset-password', { state: { email: email.trim() } });
+      navigate('/auth/reset-password', { state: { email: email.trim() } });
     } catch (err) {
       toast.error(err.response?.data?.message || 'Something went wrong');
     } finally {
@@ -32,7 +32,7 @@ const ForgotPassword = () => {
       icon={<FiKey size={26} />}
       title="Forgot password?"
       subtitle="Enter your email and we'll send you a reset code"
-      footer={<Link to="/admin/login" className="text-primary-600 dark:text-primary-400 font-medium hover:underline">Back to sign in</Link>}
+      footer={<Link to="/auth/login" className="text-primary-600 dark:text-primary-400 font-medium hover:underline">Back to sign in</Link>}
     >
       <form onSubmit={submit} className="space-y-5">
         <div>

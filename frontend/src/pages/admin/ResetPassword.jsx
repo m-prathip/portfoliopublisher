@@ -27,7 +27,7 @@ const ResetPassword = () => {
   const timer = useRef(null);
 
   useEffect(() => {
-    if (!email) navigate('/admin/forgot-password', { replace: true });
+    if (!email) navigate('/auth/forgot-password', { replace: true });
   }, [email, navigate]);
 
   useEffect(() => {
@@ -74,7 +74,8 @@ const ResetPassword = () => {
       const { data } = await authAPI.resetPassword({ resetToken, password: pwd });
       completeSession(data); // auto-login
       toast.success('Password updated — you are signed in');
-      navigate('/admin/profile', { replace: true });
+      const { user: loggedInUser } = data;
+      navigate(`/${loggedInUser.username}-${loggedInUser.dashboardHash}/profile`, { replace: true });
     } catch (err) {
       toast.error(err.response?.data?.message || 'Could not reset password');
     } finally {
@@ -89,7 +90,7 @@ const ResetPassword = () => {
       subtitle={step === 'otp'
         ? <>Enter the code we sent to <span className="font-medium text-gray-700 dark:text-gray-300">{email}</span></>
         : 'Choose a strong new password'}
-      footer={<Link to="/admin/login" className="text-primary-600 dark:text-primary-400 font-medium hover:underline">Back to sign in</Link>}
+      footer={<Link to="/auth/login" className="text-primary-600 dark:text-primary-400 font-medium hover:underline">Back to sign in</Link>}
     >
       {step === 'otp' ? (
         <>

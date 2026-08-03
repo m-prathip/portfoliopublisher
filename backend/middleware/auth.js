@@ -19,14 +19,14 @@ const protect = async (req, res, next) => {
       return res.status(401).json({ message: 'Not authorized, token failed' });
     }
 
-    const user = await User.findById(decoded.id).select('email username role isVerified passwordChangedAt');
+    const user = await User.findById(decoded.id).select('email username role isVerified passwordChangedAt dashboardHash');
     if (!user) return res.status(401).json({ message: 'Account no longer exists' });
     if (!user.isVerified) return res.status(403).json({ message: 'Email not verified' });
     if (user.passwordChangedAfter(decoded.iat)) {
       return res.status(401).json({ message: 'Session expired, please sign in again' });
     }
 
-    req.user = { id: user._id, email: user.email, username: user.username, role: user.role };
+    req.user = { id: user._id, email: user.email, username: user.username, role: user.role, dashboardHash: user.dashboardHash };
     next();
   } catch (err) {
     res.status(500).json({ message: 'Auth check failed' });

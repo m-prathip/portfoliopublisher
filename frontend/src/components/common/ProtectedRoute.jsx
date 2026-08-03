@@ -1,11 +1,21 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { PageLoader } from '../common/Spinner';
+import { PageLoader } from './Spinner';
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuth, loading } = useAuth();
+  const { isAuth, loading, user } = useAuth();
+  const { dashboardId } = useParams();
+
   if (loading) return <PageLoader />;
-  return isAuth ? children : <Navigate to="/admin/login" replace />;
+  if (!isAuth || !user) return <Navigate to="/auth/login" replace />;
+
+  const expectedDashboardId = `${user.username}-${user.dashboardHash}`;
+  
+  if (dashboardId && dashboardId !== expectedDashboardId) {
+    return <Navigate to={`/${expectedDashboardId}/profile`} replace />;
+  }
+
+  return children;
 };
 
 export default ProtectedRoute;

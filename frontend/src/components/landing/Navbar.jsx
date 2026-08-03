@@ -68,14 +68,14 @@ const LandingNavbar = () => {
           {/* Desktop CTA */}
           <div className="hidden md:flex items-center gap-3">
             <Link
-              to="/admin/login"
+              to="/auth/login"
               className="text-[14px] text-gray-400 hover:text-white transition-colors duration-200 px-4 py-2"
             >
               Sign in
             </Link>
             <MagneticButton>
               <Link
-                to="/admin/signup"
+                to="/auth/signup"
                 className="landing-btn-primary text-[14px] px-5 py-2.5"
               >
                 Create Free Portfolio
@@ -86,7 +86,7 @@ const LandingNavbar = () => {
           {/* Mobile Right Action + Hamburger */}
           <div className="flex md:hidden items-center gap-2 sm:gap-2.5 shrink-0">
             <Link
-              to="/admin/login"
+              to={`/${user.username}-${user.dashboardHash}/profile`}
               className="landing-btn-primary text-xs font-semibold px-3.5 py-1.5 whitespace-nowrap shadow-md shadow-violet-500/20"
             >
               Sign in
@@ -137,14 +137,14 @@ const LandingNavbar = () => {
             ))}
             <div className="mt-8 flex flex-col gap-3">
               <Link
-                to="/admin/login"
+                to="/auth/login"
                 onClick={() => setMobileOpen(false)}
                 className="text-center py-3.5 text-white font-medium bg-white/[0.05] border border-white/[0.1] rounded-xl hover:bg-white/10 transition-colors"
               >
                 Sign in
               </Link>
               <Link
-                to="/admin/signup"
+                to="/auth/signup"
                 onClick={() => setMobileOpen(false)}
                 className="landing-btn-primary text-center py-3.5 font-semibold shadow-lg shadow-violet-500/20"
               >

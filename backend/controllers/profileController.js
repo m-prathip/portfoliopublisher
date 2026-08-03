@@ -12,7 +12,7 @@ const WhyHire = require('../models/WhyHire');
 // @route  GET /api/profile/me
 const getMyProfile = async (req, res) => {
   try {
-    const profile = await Profile.findOne({ user: req.user.id });
+    const profile = await Profile.findOne({ user: req.user.id }).lean();
     if (!profile) return res.status(404).json({ message: 'Profile not set up yet' });
     res.json(profile);
   } catch (err) { res.status(500).json({ message: err.message }); }
@@ -58,15 +58,17 @@ const getPublicProfile = async (req, res) => {
     if (!profile) return res.json({ username: req.portfolioUser.username, isSetup: false });
     
     // Fetch all related sections in parallel to avoid frontend waterfalls
+    // Exclude internal fields to reduce payload size for the public API
+    const excludeFields = '-createdAt -updatedAt -__v';
     const [skills, projects, experience, education, achievements, certificates, activities, whyHire] = await Promise.all([
-      Skill.find({ user: userId }).sort('order').lean(),
-      Project.find({ user: userId }).sort('order').lean(),
-      Experience.find({ user: userId }).sort('-startDate').lean(),
-      Education.find({ user: userId }).sort('-startDate').lean(),
-      Achievement.find({ user: userId }).sort('-date').lean(),
-      Certificate.find({ user: userId }).sort('order').lean(),
-      Activity.find({ user: userId }).sort('-date').lean(),
-      WhyHire.find({ user: userId }).sort('order').lean()
+      Skill.find({ user: userId }).select(excludeFields).sort('order').lean(),
+      Project.find({ user: userId }).select(excludeFields).sort('order').lean(),
+      Experience.find({ user: userId }).select(excludeFields).sort('-startDate').lean(),
+      Education.find({ user: userId }).select(excludeFields).sort('-startDate').lean(),
+      Achievement.find({ user: userId }).select(excludeFields).sort('-date').lean(),
+      Certificate.find({ user: userId }).select(excludeFields).sort('order').lean(),
+      Activity.find({ user: userId }).select(excludeFields).sort('-date').lean(),
+      WhyHire.find({ user: userId }).select(excludeFields).sort('order').lean()
     ]);
 
     res.json({ 

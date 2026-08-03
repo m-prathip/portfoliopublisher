@@ -45,7 +45,7 @@ const AdminSignup = () => {
     try {
       const res = await register(form.username, form.email.trim(), form.password);
       toast.success('Account created — verify your email');
-      navigate('/admin/verify-email', { state: { email: res.email || form.email.trim() } });
+      navigate('/auth/verify-email', { state: { email: res.email || form.email.trim() } });
     } catch (err) {
       toast.error(err.response?.data?.message || 'Could not create your account');
     } finally {
@@ -66,7 +66,7 @@ const AdminSignup = () => {
       title="Create Your Portfolio"
       subtitle="Get a shareable link and QR code in seconds"
       footer={<>Already have an account?{' '}
-        <Link to="/admin/login" className="text-primary-600 dark:text-primary-400 font-medium hover:underline">Sign in</Link>
+        <Link to="/auth/login" className="text-primary-600 dark:text-primary-400 font-medium hover:underline">Sign in</Link>
       </>}
     >
       <form onSubmit={handle} className="space-y-5">

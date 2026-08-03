@@ -41,7 +41,7 @@ const CTASection = () => (
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full max-w-xs sm:max-w-none mx-auto">
           <MagneticButton className="w-full sm:w-auto">
             <Link
-              to="/admin/signup"
+              to="/auth/signup"
               className="landing-btn-primary text-sm sm:text-base px-8 sm:px-10 py-3.5 sm:py-4 shadow-xl shadow-violet-500/25 hover:shadow-violet-500/40 transition-shadow duration-300 w-full sm:w-auto flex items-center justify-center"
             >
               <span>Create Free Portfolio</span>

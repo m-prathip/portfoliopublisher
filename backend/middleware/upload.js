@@ -25,10 +25,12 @@ if (process.env.CLOUDINARY_URL || (process.env.CLOUDINARY_CLOUD_NAME && process.
   storage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: async (req, file) => {
+      const isPdf = file.mimetype === 'application/pdf';
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       return {
         folder: 'portfolio',
-        resource_type: 'auto',
-        public_id: file.fieldname + '-' + Date.now() + '-' + Math.round(Math.random() * 1e9)
+        resource_type: isPdf ? 'raw' : 'auto',
+        public_id: file.fieldname + '-' + uniqueSuffix + (isPdf ? path.extname(file.originalname).toLowerCase() : '')
       };
     },
   });

@@ -30,7 +30,7 @@ const Footer = ({ profile }) => {
         </div>
         <p className="text-center text-xs text-gray-400 dark:text-gray-600 mt-6">
           Build your own portfolio link &amp; QR code —{' '}
-          <Link to="/admin/signup" className="hover:text-primary-600 dark:hover:text-primary-400 underline">
+          <Link to="/auth/signup" className="hover:text-primary-600 dark:hover:text-primary-400 underline">
             get started free
           </Link>
         </p>

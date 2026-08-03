@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -130,34 +130,21 @@ const Home = () => {
   const { skills = [], achievements = [], activities = [], projects = [], experience = [], certificates = [], whyHire = [] } = data || {};
 
   // Group skills into the 5 specified categories
-  const groupedSkills = {
-    'Frontend': [],
-    'Backend': [],
-    'AI/ML': [],
-    'Databases': [],
-    'Tools': []
-  };
-
-  skills.forEach(s => {
-    const group = getSkillCategory(s);
-    groupedSkills[group].push(s);
-  });
-
-  // Filter out empty categories
-  Object.keys(groupedSkills).forEach(k => {
-    if (groupedSkills[k].length === 0) {
-      delete groupedSkills[k];
-    }
-  });
+  const groupedSkills = useMemo(() => {
+    const groups = { 'Frontend': [], 'Backend': [], 'AI/ML': [], 'Databases': [], 'Tools': [] };
+    skills.forEach(s => { groups[getSkillCategory(s)].push(s); });
+    Object.keys(groups).forEach(k => { if (groups[k].length === 0) delete groups[k]; });
+    return groups;
+  }, [skills]);
 
   const social = profile?.social || {};
-  const socialLinks = [
+  const socialLinks = useMemo(() => [
     { key: 'linkedin', icon: <FiLinkedin />, label: 'LinkedIn' },
     { key: 'github', icon: <FiGithub />, label: 'GitHub' },
     { key: 'twitter', icon: <FiTwitter />, label: 'Twitter' },
     { key: 'instagram', icon: <FiInstagram />, label: 'Instagram' },
     { key: 'portfolio', icon: <FiExternalLink />, label: 'Portfolio' }
-  ].filter((l) => social[l.key]);
+  ].filter((l) => social[l.key]), [social]);
 
   const roles = [profile?.title, ...(profile?.domains || [])].filter(Boolean);
   const typed = 'Software Developer';
@@ -169,21 +156,21 @@ const Home = () => {
   const projectCount = projects.length || 10;
   const certCount = certificates.length || 4;
 
-  const recruiterStats = [
+  const recruiterStats = useMemo(() => [
     { icon: <FiAward className="text-accent w-5 h-5" />, value: achievementsCount, label: 'Achievements', suffix: '+' },
     { icon: <FiCode className="text-accent w-5 h-5" />, value: projectCount, label: 'Projects Shipped', suffix: '+' },
     { icon: <FiZap className="text-accent w-5 h-5" />, value: techCount, label: 'Technologies Mastered', suffix: '+' },
     { icon: <FiAward className="text-accent w-5 h-5" />, value: certCount, label: 'Certifications Issued', suffix: '' }
-  ];
+  ], [achievementsCount, projectCount, techCount, certCount]);
 
-  const whyHireList = whyHire.length > 0 
+  const whyHireList = useMemo(() => whyHire.length > 0 
     ? whyHire.map(w => w.title)
     : [
         profile?.about ? `${(profile.about || '').slice(0, 110)}${profile.about.length > 110 ? '…' : ''}` : null,
         skills.length ? `Hands-on with ${topSkills.slice(0, 4).join(', ')}${skills.length > 4 ? ' and more' : ''}.` : null,
         projects.length ? `Shipped ${projects.length} real project${projects.length > 1 ? 's' : ''} you can explore live.` : null,
         achievements.length ? `${achievements.length} recognised achievement${achievements.length > 1 ? 's' : ''} & certifications.` : null
-      ].filter(Boolean);
+      ].filter(Boolean), [whyHire, profile, skills, projects, achievements, topSkills]);
 
   const resumeUrl = asset(profile?.resumeUrl);
 
@@ -206,11 +193,11 @@ const Home = () => {
   };
 
   // Classify and sort projects
-  const categorizedProjects = projects.map((p, idx) => ({
+  const categorizedProjects = useMemo(() => projects.map((p, idx) => ({
     ...p,
     category: getProjectCategory(p),
     meta: getPremiumProjectMeta(p, idx)
-  }));
+  })), [projects]);
 
   const filteredProjects = categorizedProjects;
 
@@ -722,4 +709,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default memo(Home);
