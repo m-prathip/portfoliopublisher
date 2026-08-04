@@ -126,27 +126,35 @@ const HeroSection = () => {
         </motion.div>
       </div>
 
-      {/* Floating Mockups */}
+      {/* Floating Mockup Browser Container */}
       <motion.div
-        initial={{ opacity: 0, y: 50 }}
+        initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.1, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 w-full max-w-5xl mx-auto px-5 sm:px-8 pt-4 pb-12"
+        transition={{ delay: 1.0, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-8 pt-4 pb-12"
       >
-        <div className="relative rounded-2xl bg-white p-2.5 sm:p-4 border border-slate-200/80 shadow-2xl shadow-slate-900/8">
-          <div className="flex items-center gap-2 pb-3 px-2 border-b border-slate-100">
-            <div className="w-3 h-3 rounded-full bg-slate-200" />
-            <div className="w-3 h-3 rounded-full bg-slate-200" />
-            <div className="w-3 h-3 rounded-full bg-slate-200" />
-            <span className="text-xs text-slate-400 font-mono ml-2">portfolio-publisher.com/u/alex</span>
+        <div className="relative rounded-2xl bg-white border border-slate-200/90 shadow-2xl shadow-slate-900/10 overflow-hidden">
+          {/* Mac/Browser Top Control Bar */}
+          <div className="flex items-center justify-between px-4 py-3 bg-slate-100/90 border-b border-slate-200/80">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-rose-400/80" />
+              <div className="w-3 h-3 rounded-full bg-amber-400/80" />
+              <div className="w-3 h-3 rounded-full bg-emerald-400/80" />
+            </div>
+            <div className="flex-1 max-w-md mx-3 px-3 py-1 bg-white rounded-md border border-slate-200/80 text-center shadow-2xs">
+              <span className="text-xs text-slate-500 font-mono font-medium truncate block">portfolio-publisher.com/u/alex</span>
+            </div>
+            <div className="w-12 hidden sm:block" />
           </div>
-          <FloatingMockup variant="laptop" className="mx-auto" parallaxStrength={20}>
+
+          {/* Screenshot Container */}
+          <div className="relative w-full overflow-hidden bg-slate-50">
             <img
               src="/portfolio_mockup.png"
               alt="Portfolio Dashboard Preview"
-              className="w-full h-auto rounded-lg"
+              className="w-full h-auto block object-cover"
             />
-          </FloatingMockup>
+          </div>
         </div>
       </motion.div>
 
