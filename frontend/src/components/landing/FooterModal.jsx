@@ -467,7 +467,7 @@ const FooterModal = ({ isOpen, onClose, label }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="fixed inset-0 bg-black/80 backdrop-blur-md"
+          className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs"
         />
 
         {/* Modal Window */}
@@ -475,24 +475,21 @@ const FooterModal = ({ isOpen, onClose, label }) => {
           initial={{ scale: 0.95, opacity: 0, y: 20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.95, opacity: 0, y: 20 }}
-          transition={{ type: 'spring', duration: 0.5, bounce: 0.15 }}
-          className="relative z-10 w-full max-w-2xl bg-[#080d24] border border-white/[0.12] rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col"
+          transition={{ type: 'spring', duration: 0.4, bounce: 0.1 }}
+          className="relative z-10 w-full max-w-2xl bg-white border border-slate-200/90 rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col text-slate-900"
         >
-          {/* Top glow */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-[1px] bg-gradient-to-r from-transparent via-violet-500 to-transparent" />
-
           {/* Modal Header */}
-          <div className="p-6 border-b border-white/[0.08] flex items-start justify-between bg-white/[0.02]">
+          <div className="p-6 border-b border-slate-200/80 flex items-start justify-between bg-slate-50">
             <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-violet-400 px-2 py-0.5 rounded-full bg-violet-500/10 border border-violet-500/20 mb-2 inline-block">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 px-2.5 py-0.5 rounded-full bg-slate-200/80 border border-slate-300 mb-2 inline-block">
                 {data.category}
               </span>
-              <h3 className="text-xl sm:text-2xl font-bold text-white mt-1">{data.title}</h3>
-              <p className="text-xs sm:text-sm text-gray-400 mt-1">{data.subtitle}</p>
+              <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">{data.title}</h3>
+              <p className="text-xs sm:text-sm text-slate-500 mt-1">{data.subtitle}</p>
             </div>
             <button
               onClick={onClose}
-              className="w-8 h-8 rounded-full bg-white/[0.05] border border-white/[0.1] flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/[0.1] transition-colors flex-shrink-0 ml-4"
+              className="w-8 h-8 rounded-full bg-slate-200/80 border border-slate-300 flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-300 transition-colors flex-shrink-0 ml-4 cursor-pointer font-bold text-xs"
               aria-label="Close modal"
             >
               ✕
@@ -500,16 +497,16 @@ const FooterModal = ({ isOpen, onClose, label }) => {
           </div>
 
           {/* Modal Body */}
-          <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">
+          <div className="p-6 overflow-y-auto flex-1 custom-scrollbar text-slate-700">
             {data.body}
           </div>
 
           {/* Modal Footer */}
-          <div className="p-4 border-t border-white/[0.08] bg-white/[0.01] flex items-center justify-between text-xs text-gray-500">
-            <span>Portfolio Publisher • Official Documentation</span>
+          <div className="p-4 border-t border-slate-200/80 bg-slate-50 flex items-center justify-between text-xs text-slate-500">
+            <span className="font-medium">Portfolio Publisher • Official Information</span>
             <button
               onClick={onClose}
-              className="px-4 py-1.5 rounded-lg bg-white/[0.08] hover:bg-white/[0.12] text-white font-medium transition-colors"
+              className="px-4 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold transition-colors cursor-pointer"
             >
               Close Window
             </button>

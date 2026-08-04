@@ -40,24 +40,25 @@ const FAQS = [
 
 const FAQItem = ({ faq, index, isOpen, onToggle }) => (
   <motion.div
-    initial={{ opacity: 0, y: 20 }}
+    initial={{ opacity: 0, y: 15 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
-    transition={{ delay: index * 0.06 }}
+    transition={{ delay: index * 0.05 }}
+    className="border-b border-slate-200/80"
   >
     <button
       onClick={onToggle}
-      className="w-full flex items-center justify-between py-5 text-left group"
+      className="w-full flex items-center justify-between py-6 text-left group cursor-pointer"
     >
-      <span className="text-[15px] font-medium text-white group-hover:text-violet-300 transition-colors duration-200 pr-8">
+      <span className="text-base font-bold text-slate-900 group-hover:text-slate-600 transition-colors duration-200 pr-8">
         {faq.q}
       </span>
       <motion.div
         animate={{ rotate: isOpen ? 45 : 0 }}
         transition={{ duration: 0.2 }}
-        className="w-6 h-6 rounded-full border border-white/[0.1] flex items-center justify-center flex-shrink-0 group-hover:border-violet-500/30 transition-colors duration-200"
+        className="w-7 h-7 rounded-full border border-slate-200 bg-slate-50 flex items-center justify-center flex-shrink-0 group-hover:border-slate-400 group-hover:bg-slate-100 transition-colors duration-200"
       >
-        <svg className="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <svg className="w-3.5 h-3.5 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
         </svg>
       </motion.div>
@@ -68,16 +69,15 @@ const FAQItem = ({ faq, index, isOpen, onToggle }) => (
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: 'auto', opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.3, ease: [0.25, 0.46, 0.45, 0.94] }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="overflow-hidden"
         >
-          <p className="text-sm text-gray-400 leading-relaxed pb-5 pr-12">
+          <p className="text-base text-slate-600 leading-relaxed pb-6 pr-8 font-normal">
             {faq.a}
           </p>
         </motion.div>
       )}
     </AnimatePresence>
-    <div className="h-[1px] bg-white/[0.05]" />
   </motion.div>
 );
 
@@ -85,26 +85,25 @@ const FAQSection = () => {
   const [openIdx, setOpenIdx] = useState(null);
 
   return (
-    <SectionWrapper id="faq" variant="fadeUp" className="py-24 sm:py-32">
+    <SectionWrapper id="faq" variant="fadeUp" className="py-20 sm:py-28 bg-slate-50/50">
       <div className="max-w-3xl mx-auto px-5 sm:px-8">
         {/* Header */}
-        <div className="text-center mb-14">
+        <div className="text-center mb-12">
           <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="text-sm font-medium text-cyan-400 tracking-wider uppercase mb-4"
+            className="text-xs font-bold text-slate-500 tracking-widest uppercase mb-3"
           >
             FAQ
           </motion.p>
-          <h2 className="text-3xl sm:text-5xl font-bold text-white leading-tight tracking-[-0.02em] mb-5">
-            Frequently asked{' '}
-            <GradientText from="#06b6d4" via="#3b82f6" to="#7c3aed">questions</GradientText>
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 leading-tight tracking-[-0.03em] mb-4">
+            Frequently asked questions
           </h2>
         </div>
 
         {/* FAQ items */}
-        <div>
+        <div className="bg-white border border-slate-200/80 rounded-2xl px-6 sm:px-8 shadow-xs">
           {FAQS.map((faq, i) => (
             <FAQItem
               key={i}

@@ -49,23 +49,20 @@ const FooterSection = () => {
   };
 
   return (
-    <footer className="relative border-t border-white/[0.05]">
-      {/* Top gradient line */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-[1px] bg-gradient-to-r from-transparent via-violet-500/40 to-transparent" />
-
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 pt-16 pb-8">
+    <footer className="relative bg-slate-50 border-t border-slate-200/80 text-slate-900">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 pt-16 pb-10">
         <div className="grid grid-cols-2 md:grid-cols-6 gap-8 lg:gap-12 mb-12">
           {/* Brand column */}
           <div className="col-span-2">
             <Link to="/" className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-cyan-400 flex items-center justify-center shadow-lg shadow-violet-500/20">
+              <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center shadow-xs">
                 <span className="text-white font-bold text-sm">P</span>
               </div>
-              <span className="text-[15px] font-semibold text-white tracking-tight">
-                Portfolio<span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">Publisher</span>
+              <span className="text-base font-bold text-slate-900 tracking-tight">
+                Portfolio<span className="text-slate-500 font-medium">Publisher</span>
               </span>
             </Link>
-            <p className="text-sm text-gray-500 leading-relaxed max-w-xs mb-6">
+            <p className="text-sm text-slate-500 leading-relaxed max-w-xs mb-6">
               Build your professional portfolio, get a personal URL and QR code. Stand out to recruiters.
             </p>
             {/* Social links */}
@@ -76,7 +73,7 @@ const FooterSection = () => {
                   href={href}
                   aria-label={label}
                   title="portfoliopublisher@gmail.com"
-                  className="w-9 h-9 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-gray-500 hover:text-white hover:bg-white/[0.08] hover:border-violet-500/30 transition-all duration-200"
+                  className="w-9 h-9 rounded-lg bg-white border border-slate-200/80 shadow-2xs flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all duration-200"
                 >
                   {icon}
                 </a>
@@ -87,21 +84,21 @@ const FooterSection = () => {
           {/* Link columns */}
           {Object.entries(FOOTER_LINKS).map(([title, links]) => (
             <div key={title}>
-              <h4 className="text-sm font-semibold text-white mb-4">{title}</h4>
-              <ul className="space-y-2.5">
+              <h4 className="text-sm font-bold text-slate-900 mb-4 tracking-tight">{title}</h4>
+              <ul className="space-y-3">
                 {links.map(({ label, href, router }) => (
                   <li key={label}>
                     {router ? (
                       <Link
                         to={href}
-                        className="text-sm text-gray-500 hover:text-gray-300 transition-colors duration-200"
+                        className="text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors duration-200"
                       >
                         {label}
                       </Link>
                     ) : (
                       <button
                         onClick={(e) => handleLinkClick(e, label, href, router)}
-                        className="text-left text-sm text-gray-500 hover:text-gray-300 transition-colors duration-200 w-full"
+                        className="text-left text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors duration-200 w-full cursor-pointer"
                       >
                         {label}
                       </button>
@@ -114,14 +111,12 @@ const FooterSection = () => {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 border-t border-white/[0.05] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-600">
+        <div className="pt-8 border-t border-slate-200/60 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs sm:text-sm text-slate-500 font-medium">
             © {new Date().getFullYear()} Portfolio Publisher. All rights reserved.
           </p>
-          <div className="flex items-center gap-1.5 text-sm text-gray-600">
-            <span>Built with</span>
-            <span className="text-red-400">♥</span>
-            <span>for professionals worldwide</span>
+          <div className="flex items-center gap-1.5 text-xs sm:text-sm text-slate-500 font-medium">
+            <span>Built for professionals worldwide</span>
           </div>
         </div>
       </div>

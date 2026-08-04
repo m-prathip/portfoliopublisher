@@ -15,14 +15,14 @@ const Landing = () => {
   const { setTheme } = useTheme();
 
   useEffect(() => {
-    setTheme('openai');
-    // Force dark mode for the landing page
-    document.documentElement.classList.add('dark');
+    setTheme('apple');
+    // Ensure clean light mode for the landing page
+    document.documentElement.classList.remove('dark');
     return () => {};
   }, [setTheme]);
 
   return (
-    <div className="landing-root min-h-screen bg-[#050816] text-white overflow-x-hidden">
+    <div className="landing-root min-h-screen bg-[#FAFAFA] text-slate-900 overflow-x-hidden antialiased">
       <LandingNavbar />
       <main>
         <HeroSection />
