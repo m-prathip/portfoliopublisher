@@ -16,9 +16,17 @@ const AdminShare = () => {
   // shown here always matches exactly what's encoded in the QR code below —
   // both come from the same FRONTEND_URL the server is configured with.
   useEffect(() => {
+    if (!user?.username) return;
     portfolioAPI.getMyLink()
-      .then(res => setUrl(res.data.url))
-      .catch(() => setUrl(user?.username ? `${window.location.origin}/u/${user.username}` : ''))
+      .then(res => {
+        const link = res.data?.url;
+        if (link && !link.includes('portfolio-project-prathip')) {
+          setUrl(link);
+        } else {
+          setUrl(`${window.location.origin}/u/${user.username}`);
+        }
+      })
+      .catch(() => setUrl(`${window.location.origin}/u/${user.username}`))
       .finally(() => setLoading(false));
   }, [user?.username]);
 

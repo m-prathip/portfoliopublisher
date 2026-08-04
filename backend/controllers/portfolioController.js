@@ -2,9 +2,15 @@ const QRCode = require('qrcode');
 
 // The link encoded in the QR code points at the FRONTEND app (where
 // /u/:username is actually rendered), not at this API.
-const FRONTEND_URL = (process.env.FRONTEND_URL || 'https://portfoliopublisher.vercel.app').replace(/\/$/, '');
+const getFrontendUrl = () => {
+  const envUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',')[0].trim().replace(/\/$/, '') : '';
+  if (envUrl && !envUrl.includes('portfolio-project-prathip')) {
+    return envUrl;
+  }
+  return 'https://portfoliopublisher.vercel.app';
+};
 
-const buildPortfolioUrl = (username) => `${FRONTEND_URL}/u/${username}`;
+const buildPortfolioUrl = (username) => `${getFrontendUrl()}/u/${username}`;
 
 // @desc   Get the logged-in user's shareable portfolio link
 // @route  GET /api/portfolio/me/link
