@@ -97,7 +97,7 @@ userSchema.methods.matchPassword = async function (entered) {
 // True if the token was issued before the password was last changed.
 userSchema.methods.passwordChangedAfter = function (tokenIssuedAtSec) {
   if (!this.passwordChangedAt) return false;
-  return Math.floor(this.passwordChangedAt.getTime() / 1000) > tokenIssuedAtSec;
+  return Math.floor(this.passwordChangedAt.getTime() / 1000) - 1 > tokenIssuedAtSec;
 };
 
 const User = mongoose.model('User', userSchema);

@@ -24,8 +24,8 @@ const checkLockout = async (req, res, next) => {
   const record = getFailedAttempts(ip);
 
   if (record.lockedUntil && record.lockedUntil > new Date()) {
-    // Keep it generic to not reveal lockout vs bad password
-    return res.status(401).json({ message: 'Invalid credentials or account locked. Please try again later.' });
+    const remainingMins = Math.ceil((record.lockedUntil.getTime() - Date.now()) / (60 * 1000));
+    return res.status(429).json({ message: `Account temporarily locked due to failed login attempts. Please try again in ${remainingMins} minute(s) or reset your password.` });
   }
 
   // If locked out period has passed, reset the count

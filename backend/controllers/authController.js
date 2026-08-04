@@ -359,6 +359,9 @@ const resetPassword = async (req, res) => {
     user.refreshTokens = [];           // revoke all existing sessions
     await user.save();
 
+    const ip = getClientIp(req);
+    lockout.resetFailedAttempts(ip);
+
     const accessToken = await issueSession(user, req, res); // fresh session (auto-login)
     LoginActivity.create({ user: user._id, email: user.email, event: 'password_reset', reason: 'completed', ip: getClientIp(req) }).catch(() => {});
     sendMail({ to: user.email, ...emails.passwordChanged() }).catch(() => { });
