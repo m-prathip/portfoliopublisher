@@ -44,6 +44,8 @@ api.interceptors.response.use(
   (res) => {
     if (res.config.method === 'get') {
       apiCache.set(res.config.url, { data: res.data, timestamp: Date.now() });
+    } else if (['post', 'put', 'patch', 'delete'].includes(res.config.method)) {
+      apiCache.clear();
     }
     return res;
   },
