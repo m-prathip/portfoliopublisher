@@ -172,7 +172,24 @@ const Home = () => {
         achievements.length ? `${achievements.length} recognised achievement${achievements.length > 1 ? 's' : ''} & certifications.` : null
       ].filter(Boolean), [whyHire, profile, skills, projects, achievements, topSkills]);
 
-  const resumeUrl = asset(profile?.resumeUrl);
+  const rawResumeUrl = asset(profile?.resumeUrl);
+  const resumeUrl = useMemo(() => {
+    if (!rawResumeUrl) return null;
+    if (rawResumeUrl.includes('res.cloudinary.com')) {
+      let u = rawResumeUrl;
+      if (u.includes('/raw/upload/')) {
+        u = u.replace('/raw/upload/', '/image/upload/');
+      }
+      if (!u.includes('/f_jpg/')) {
+        u = u.replace('/image/upload/', '/image/upload/f_jpg/');
+      }
+      if (u.endsWith('.pdf')) {
+        u = u.substring(0, u.lastIndexOf('.')) + '.jpg';
+      }
+      return u;
+    }
+    return rawResumeUrl;
+  }, [rawResumeUrl]);
 
   const sendContact = async (e) => {
     e.preventDefault();
