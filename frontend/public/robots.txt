@@ -3,5 +3,6 @@ Allow: /
 
 # Public portfolios are indexable; the admin area is not.
 Disallow: /admin/
+Disallow: /auth/
 
-Sitemap: /sitemap.xml
+Sitemap: https://portfoliopublisher.vercel.app/sitemap.xml
