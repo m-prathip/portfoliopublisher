@@ -257,7 +257,15 @@ const Home = () => {
 
               <div className="flex flex-wrap justify-center gap-3 pt-2">
                 {resumeUrl && (
-                  <a href={resumeUrl} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                  <a 
+                    href={resumeUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="btn-primary"
+                    onClick={() => {
+                      portfolioAPI.recordResumeDownload(username).catch(() => {});
+                    }}
+                  >
                     <FiDownload size={16} /> Resume
                   </a>
                 )}

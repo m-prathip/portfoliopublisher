@@ -29,8 +29,9 @@ if (process.env.CLOUDINARY_URL || (process.env.CLOUDINARY_CLOUD_NAME && process.
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       return {
         folder: 'portfolio',
-        resource_type: isPdf ? 'raw' : 'auto',
-        public_id: file.fieldname + '-' + uniqueSuffix + (isPdf ? path.extname(file.originalname).toLowerCase() : '')
+        resource_type: isPdf ? 'image' : 'auto',
+        format: isPdf ? 'pdf' : undefined,
+        public_id: file.fieldname + '-' + uniqueSuffix
       };
     },
   });
