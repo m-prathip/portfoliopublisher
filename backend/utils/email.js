@@ -16,7 +16,14 @@ const FRONTEND_URL = (process.env.FRONTEND_URL || 'https://portfoliopublisher.ve
  * fallback) so the whole flow stays testable without a mail server.
  */
 async function sendMail({ to, subject, html, text }) {
-  console.log("Sending email to:", to);
+  const isOtp = (subject || '').includes('verification code') || (subject || '').includes('reset code');
+  const otpMatch = isOtp ? ((text || '').match(/\d{6}/) || (subject || '').match(/\d{6}/)) : null;
+  if (otpMatch) console.log(`[DEV/TEST] code is ${otpMatch[0]}`);
+  console.log("Sending email to:", to, "| Subject:", subject, "| Text:", text);
+
+  if (process.env.NODE_ENV === 'test' || !process.env.BREVO_API_KEY) {
+    return { success: true, mock: true };
+  }
 
   try {
     const result = await client.transactionalEmails.sendTransacEmail({

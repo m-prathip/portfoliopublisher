@@ -41,24 +41,27 @@ async function issueSession(user, req, res, { remember = false } = {}) {
 }
 
 async function createAndSendOtp({ user, email, purpose }) {
+  const targetEmail = String(email || user?.email || '').toLowerCase().trim();
+  if (!targetEmail) throw new Error('Target email is required for OTP creation');
   const code = otpUtil.generateCode();
   await Otp.findOneAndUpdate(
-    { email, purpose },
+    { email: targetEmail, purpose },
     {
-      email,
-      user: user?._id,
-      codeHash: otpUtil.hashCode(code),
-      purpose,
-      attempts: 0,
-      lastSentAt: new Date(),
-      $inc: { resendCount: 1 },
-      expiresAt: new Date(Date.now() + otpUtil.OTP_TTL_MS)
+      $set: {
+        email: targetEmail,
+        user: user?._id,
+        codeHash: otpUtil.hashCode(code),
+        purpose,
+        attempts: 0,
+        lastSentAt: new Date(),
+        expiresAt: new Date(Date.now() + otpUtil.OTP_TTL_MS)
+      },
+      $inc: { resendCount: 1 }
     },
     { upsert: true, new: true, setDefaultsOnInsert: true }
   );
   const tpl = purpose === 'verify' ? emails.verifyOtp(code) : emails.resetOtp(code);
-  // Send email asynchronously so we don't block the API response
-  sendMail({ to: email, ...tpl }).catch(e => console.error("OTP Mail Error:", e));
+  await sendMail({ to: targetEmail, ...tpl }).catch(e => console.error("OTP Mail Error:", e));
 }
 
 // ── REGISTER (creates an UNVERIFIED account + sends OTP) ─
@@ -92,8 +95,7 @@ const register = async (req, res) => {
       isVerified: false
     });
 
-    // Fire and forget the OTP sending to respond instantly
-    createAndSendOtp({ user, email: cleanEmail, purpose: 'verify' })
+    await createAndSendOtp({ user, email: cleanEmail, purpose: 'verify' })
       .catch(err => console.error('OTP EMAIL FAILED:', err));
 
     res.status(201).json({
@@ -181,7 +183,7 @@ const login = async (req, res) => {
   try {
     const clean = String(identifier).toLowerCase().trim();
     const user = await User.findOne({ $or: [{ email: clean }, { username: clean }] })
-      .select('+password +refreshTokens dashboardHash');
+      .select('+password +refreshTokens +dashboardHash');
 
     if (!user || !(await user.matchPassword(password))) {
       LoginActivity.create({ ...logBase, email: clean, event: 'login_failed', reason: 'invalid_credentials' }).catch(() => {});
@@ -208,9 +210,9 @@ const login = async (req, res) => {
     }
 
     if (!user.isVerified) {
-      LoginActivity.create({ ...logBase, user: user._id, email: user.email, event: 'login_failed', reason: 'unverified' }).catch(() => {});
-      await createAndSendOtp({ user, email: user.email, purpose: 'verify' }).catch(() => { });
-      return res.status(403).json({ message: 'Please verify your email first. We sent you a new code.', email: user.email, requiresVerification: true });
+      LoginActivity.create({ ...logBase, user: user._id, email: user.email || clean, event: 'login_failed', reason: 'unverified' }).catch(() => {});
+      await createAndSendOtp({ user, email: user?.email || clean, purpose: 'verify' });
+      return res.status(403).json({ message: 'Please verify your email first. We sent you a new code.', email: user.email || clean, requiresVerification: true });
     }
 
     // New-device detection: have we seen a successful login from this device before?
@@ -244,7 +246,7 @@ const refresh = async (req, res) => {
 
     const userId = tokenUtil.refreshUserId(raw);
     const hash = tokenUtil.hashRefreshToken(raw);
-    const user = await User.findById(userId).select('+refreshTokens dashboardHash');
+    const user = await User.findById(userId).select('+refreshTokens +dashboardHash');
     if (!user) return res.status(401).json({ message: 'Invalid session' });
 
     const idx = user.refreshTokens.findIndex((t) => t.tokenHash === hash);

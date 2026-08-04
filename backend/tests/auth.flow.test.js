@@ -10,7 +10,11 @@ const request = require('supertest');
 
 let lastOtp = null;
 const origLog = console.log;
-console.log = (...args) => { const m = (args.join(' ').match(/code is (\d{6})/)); if (m) lastOtp = m[1]; };
+console.log = (...args) => { 
+  origLog(...args); 
+  const m = (args.join(' ').match(/code is (\d{6})/)); 
+  if (m) lastOtp = m[1]; 
+};
 
 (async () => {
   const mem = await MongoMemoryServer.create();
@@ -27,7 +31,8 @@ console.log = (...args) => { const m = (args.join(' ').match(/code is (\d{6})/))
   ok('register issues OTP, no token');
 
   r = await agent.post('/api/auth/login').send({ identifier: 'jane@example.com', password: 'StrongP@ss1' });
-  if (r.status !== 403) fail('login before verify should be 403');
+  await new Promise(r => setTimeout(r, 100));
+  if (r.status !== 403) fail('login before verify should be 403, got: ' + r.status + ' ' + JSON.stringify(r.body));
   ok('login blocked until verified');
 
   r = await agent.post('/api/auth/verify-email').send({ email: 'jane@example.com', code: '000000' });
@@ -35,7 +40,7 @@ console.log = (...args) => { const m = (args.join(' ').match(/code is (\d{6})/))
   ok('wrong OTP rejected');
 
   r = await agent.post('/api/auth/verify-email').send({ email: 'jane@example.com', code: lastOtp });
-  if (r.status !== 200 || !r.body.token) fail('verify failed');
+  if (r.status !== 200 || !r.body.token) fail('verify failed: status=' + r.status + ' body=' + JSON.stringify(r.body));
   if (!/refreshToken=.*HttpOnly/i.test((r.headers['set-cookie'] || []).join(';'))) fail('refresh cookie not httpOnly');
   ok('verify activates + httpOnly refresh cookie');
 
@@ -48,7 +53,7 @@ console.log = (...args) => { const m = (args.join(' ').match(/code is (\d{6})/))
   ok('refresh rotates token');
 
   r = await agent.post('/api/auth/login').send({ identifier: 'jane-doe', password: 'StrongP@ss1', remember: true });
-  if (r.status !== 200) fail('login failed');
+  if (r.status !== 200) fail('login failed: ' + r.status + ' ' + JSON.stringify(r.body));
   ok('verified login works');
 
   r = await agent.post('/api/auth/register').send({ username: 'bob-x', email: 'bob@example.com', password: 'weak' });

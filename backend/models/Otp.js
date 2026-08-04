@@ -17,6 +17,6 @@ const otpSchema = new mongoose.Schema({
 
 // TTL: Mongo removes the doc once expiresAt is in the past.
 otpSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
-otpSchema.index({ email: 1, purpose: 1 });
+otpSchema.index({ email: 1, purpose: 1 }, { unique: true });
 
 module.exports = mongoose.model('Otp', otpSchema);
