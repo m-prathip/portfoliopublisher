@@ -291,7 +291,7 @@ const AdminProfile = () => {
           </Field>
 
           <Field label="Resume (PDF)">
-            {profile?.resumeUrl && profile.resumeUrl.includes('/raw/upload/') && (
+            {current?.resumeUrl && current.resumeUrl.includes('/raw/upload/') && (
               <div className="mb-2.5 p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-600 dark:text-amber-400 text-xs flex items-center gap-2">
                 <span>⚠️ Legacy Cloudinary link detected. Please re-select your PDF resume below and click <b>Save Changes</b> to generate a direct preview link.</span>
               </div>
