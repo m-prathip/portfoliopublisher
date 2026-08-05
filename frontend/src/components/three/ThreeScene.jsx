@@ -42,8 +42,8 @@ function ParticleEngine({ color, config }) {
 
   return (
     <points ref={ref}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
+      <bufferGeometry key={count}>
+        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} usage={THREE.DynamicDrawUsage} />
       </bufferGeometry>
       <pointsMaterial 
         size={shape === 'stars' ? 0.05 : 0.035} 
@@ -102,11 +102,11 @@ function LineEngine({ color, config }) {
   return (
     <group ref={group}>
       <points>
-        <bufferGeometry><bufferAttribute attach="attributes-position" count={count} array={nodes} itemSize={3} /></bufferGeometry>
+        <bufferGeometry key={`pts-${count}`}><bufferAttribute attach="attributes-position" count={count} array={nodes} itemSize={3} /></bufferGeometry>
         <pointsMaterial size={0.07} color={color} transparent opacity={0.9 * glow} depthWrite={false} />
       </points>
       <lineSegments>
-        <bufferGeometry><bufferAttribute attach="attributes-position" count={lines.length / 3} array={lines} itemSize={3} /></bufferGeometry>
+        <bufferGeometry key={`lines-${lines.length}`}><bufferAttribute attach="attributes-position" count={lines.length / 3} array={lines} itemSize={3} /></bufferGeometry>
         <lineBasicMaterial color={color} transparent opacity={0.2 * glow} />
       </lineSegments>
     </group>
@@ -139,7 +139,7 @@ function GeometryEngine({ color, config }) {
     <group>
       <group ref={group}>
         {items.map((it, i) => (
-          <mesh key={i} position={it.p}>
+          <mesh key={`${i}-${it.type}`} position={it.p}>
             {it.type === 'cube' && <boxGeometry args={[it.s, it.s, it.s]} />}
             {it.type === 'sphere' && <sphereGeometry args={[it.s, 24, 24]} />}
             {it.type === 'icosahedron' && <icosahedronGeometry args={[it.s, 0]} />}
@@ -209,7 +209,7 @@ export default function ThreeScene({ variant = 'off', color = '#10a37f', config 
       camera={{ position: [0, preset.engine === 'fluid' || preset.engine === 'lines' ? 2 : 0, 7], fov: 60 }}
       style={{ position: 'absolute', inset: 0 }}
     >
-      <Engine color={color} config={finalConfig} />
+      <Engine key={variant} color={color} config={finalConfig} />
     </Canvas>
   );
 }
