@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 import { FiDroplet, FiSun, FiMoon, FiCheck, FiSliders } from 'react-icons/fi';
 
-const ThemeSwitcher = ({ align = 'right', onThemeSelect, onOpenCustomizer }) => {
+const ThemeSwitcher = ({ align = 'right', onThemeSelect, onModeSelect, onOpenCustomizer }) => {
   const { mode, setMode, theme, setTheme, themes } = useTheme();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
@@ -26,7 +26,10 @@ const ThemeSwitcher = ({ align = 'right', onThemeSelect, onOpenCustomizer }) => 
           {/* Mode toggle */}
           <div className="flex items-center gap-1 p-1 mb-4 rounded-xl bg-gray-100 dark:bg-gray-900">
             {[['light', FiSun, 'Light'], ['dark', FiMoon, 'Dark']].map(([m, Icon, label]) => (
-              <button key={m} onClick={() => setMode(m)}
+              <button key={m} onClick={() => {
+                setMode(m);
+                if (onModeSelect) onModeSelect(m);
+              }}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg text-sm font-medium transition-colors
                   ${mode === m ? 'bg-white dark:bg-gray-700 text-primary-600 dark:text-primary-400 shadow-sm'
                                : 'text-gray-500 dark:text-gray-400'}`}>

@@ -45,6 +45,16 @@ const AdminLayout = () => {
     }
   };
 
+  const handleModeChange = async (m) => {
+    try {
+      const fd = new FormData();
+      fd.append('mode', m);
+      await profileAPI.updateMine(fd);
+    } catch (err) {
+      console.error('Failed to save mode', err);
+    }
+  };
+
   const linkCls = ({ isActive }) =>
     `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isActive
       ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-400'
@@ -98,8 +108,14 @@ const AdminLayout = () => {
           </button>
           <h1 className="font-semibold text-gray-900 dark:text-white hidden sm:block">Dashboard</h1>
           <div className="flex items-center gap-2 ml-auto">
-            <ThemeSwitcher onThemeSelect={handleThemeChange} onOpenCustomizer={() => setCustomizerOpen(true)} />
-            <button onClick={toggle} className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+            <ThemeSwitcher onThemeSelect={handleThemeChange} onModeSelect={handleModeChange} onOpenCustomizer={() => setCustomizerOpen(true)} />
+            <button 
+              onClick={() => {
+                toggle();
+                handleModeChange(dark ? 'light' : 'dark');
+              }} 
+              className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            >
               {dark ? <FiSun size={18} /> : <FiMoon size={18} />}
             </button>
           </div>
