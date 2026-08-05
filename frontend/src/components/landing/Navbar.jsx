@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import MagneticButton from './MagneticButton';
 
 const NAV_LINKS = [];
 
@@ -69,14 +68,12 @@ const LandingNavbar = () => {
             >
               Sign in
             </Link>
-            <MagneticButton>
-              <Link
-                to="/auth/signup"
-                className="landing-btn-primary text-[14px] px-5 py-2.5"
-              >
-                Create Free Portfolio
-              </Link>
-            </MagneticButton>
+            <Link
+              to="/auth/signup"
+              className="landing-btn-primary text-[14px] px-5 py-2.5"
+            >
+              Create Free Portfolio
+            </Link>
           </div>
 
           {/* Mobile Right Action + Hamburger */}
