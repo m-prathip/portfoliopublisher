@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import toast from 'react-hot-toast';
+import FooterModal from './FooterModal';
 
 const FOOTER_LINKS = {
   Product: [
@@ -36,10 +37,13 @@ const SOCIALS = [
 ];
 
 const FooterSection = () => {
-  const handleLinkClick = (e, href) => {
+  const [activeModal, setActiveModal] = useState(null);
+
+  const handleLinkClick = (e, label, href, router) => {
+    if (router) return;
     if (href === '#') {
       e.preventDefault();
-      toast('Coming soon!', { icon: '🚀' });
+      setActiveModal(label);
     }
   };
 
@@ -93,7 +97,7 @@ const FooterSection = () => {
                     ) : (
                       <a
                         href={href}
-                        onClick={(e) => handleLinkClick(e, href)}
+                        onClick={(e) => handleLinkClick(e, label, href, router)}
                         className="text-left text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors duration-200 w-full cursor-pointer block"
                       >
                         {label}
@@ -116,6 +120,12 @@ const FooterSection = () => {
           </div>
         </div>
       </div>
+
+      <FooterModal
+        isOpen={!!activeModal}
+        onClose={() => setActiveModal(null)}
+        label={activeModal}
+      />
     </footer>
   );
 };
