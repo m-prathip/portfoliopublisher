@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const FOOTER_LINKS = {
   Product: [
@@ -35,6 +36,13 @@ const SOCIALS = [
 ];
 
 const FooterSection = () => {
+  const handleLinkClick = (e, href) => {
+    if (href === '#') {
+      e.preventDefault();
+      toast('Coming soon!', { icon: '🚀' });
+    }
+  };
+
   return (
     <footer className="relative bg-slate-50 border-t border-slate-200/80 text-slate-900">
       <div className="max-w-7xl mx-auto px-5 sm:px-8 pt-16 pb-10">
@@ -85,6 +93,7 @@ const FooterSection = () => {
                     ) : (
                       <a
                         href={href}
+                        onClick={(e) => handleLinkClick(e, href)}
                         className="text-left text-sm text-slate-600 hover:text-slate-900 font-medium transition-colors duration-200 w-full cursor-pointer block"
                       >
                         {label}
