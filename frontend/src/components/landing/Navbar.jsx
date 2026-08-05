@@ -3,11 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import MagneticButton from './MagneticButton';
 
-const NAV_LINKS = [
-  { label: 'Features', href: '#features' },
-  { label: 'Templates', href: '#templates' },
-  { label: 'FAQ', href: '#faq' },
-];
+const NAV_LINKS = [];
 
 const LandingNavbar = () => {
   const [scrolled, setScrolled] = useState(false);

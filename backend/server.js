@@ -6,6 +6,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const dotenv = require('dotenv');
 const path = require('path');
 const compression = require('compression');
+const { apiLimiter } = require('./middleware/rateLimiters');
 
 const connectDB = require('./config/db');
 
@@ -55,6 +56,9 @@ app.use(mongoSanitize()); // strips $ and . from keys → blocks NoSQL injection
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ─── Routes ────────────────────────────────────────────
+// Apply global API rate limiter to all /api routes
+app.use('/api', apiLimiter);
+
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/profile', require('./routes/profile'));
 app.use('/api/education', require('./routes/education'));

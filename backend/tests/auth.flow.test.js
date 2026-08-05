@@ -3,6 +3,7 @@ process.env.JWT_SECRET = 'test-access';
 process.env.OTP_PEPPER = 'test-pepper';
 process.env.NODE_ENV = 'test';
 process.env.FRONTEND_URL = 'https://portfoliopublisher.vercel.app';
+process.env.COOKIE_SECURE = 'false';
 
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const mongoose = require('mongoose');
@@ -49,7 +50,7 @@ console.log = (...args) => {
   ok('access token authorizes');
 
   r = await agent.post('/api/auth/refresh');
-  if (r.status !== 200 || !r.body.token) fail('refresh failed');
+  if (r.status !== 200 || !r.body.token) fail('refresh failed: ' + r.status + ' body: ' + JSON.stringify(r.body) + ' cookies sent: ' + JSON.stringify(agent.jar.getCookies({url: 'http://127.0.0.1/api/auth/refresh'})));
   ok('refresh rotates token');
 
   r = await agent.post('/api/auth/login').send({ identifier: 'jane-doe', password: 'StrongP@ss1', remember: true });

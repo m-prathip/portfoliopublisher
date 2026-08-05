@@ -25,6 +25,11 @@ const updateMyProfile = async (req, res) => {
     const data = { ...req.body };
     delete data.user; // ownership always comes from the authenticated session
 
+    if (typeof data.backgroundConfig === 'string') {
+      try { data.backgroundConfig = JSON.parse(data.backgroundConfig); }
+      catch (e) { delete data.backgroundConfig; }
+    }
+
     if (req.files?.profileImage) {
       data.profileImage = req.files.profileImage[0].path.startsWith('http')
         ? req.files.profileImage[0].path

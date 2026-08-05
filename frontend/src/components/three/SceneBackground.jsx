@@ -21,7 +21,7 @@ function isLowEnd() {
 }
 
 const SceneBackground = () => {
-  const { bg } = useBackground();
+  const { bg, bgConfig } = useBackground();
   const { theme, mode } = useTheme();
   const color = useMemo(() => themeColor(theme), [theme]);
   const showThree = bg !== 'off' && !isLowEnd();
@@ -34,7 +34,7 @@ const SceneBackground = () => {
       {showThree && (
         <div className="absolute inset-0 opacity-60 dark:opacity-70">
           <Suspense fallback={null}>
-            <ThreeScene variant={bg} color={color} />
+            <ThreeScene variant={bg} color={color} config={bgConfig} />
           </Suspense>
         </div>
       )}

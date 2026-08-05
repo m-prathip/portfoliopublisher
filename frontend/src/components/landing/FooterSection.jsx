@@ -5,9 +5,6 @@ import FooterModal from './FooterModal';
 const FOOTER_LINKS = {
   Product: [
     { label: 'Features', href: '#features' },
-    { label: 'Templates', href: '#templates' },
-    { label: 'AI Generator', href: '#' },
-    { label: 'QR Codes', href: '#' },
   ],
   Resources: [
     { label: 'Documentation', href: '#' },

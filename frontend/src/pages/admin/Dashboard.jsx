@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate, useParams, Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
 import ThemeSwitcher from '../../components/common/ThemeSwitcher';
+import BackgroundCustomizer from '../../components/common/BackgroundCustomizer';
 import { profileAPI } from '../../services/api';
 import { FiHome, FiUser, FiBookOpen, FiBriefcase, FiCode, FiAward, FiActivity, FiLogOut, FiSun, FiMoon, FiMenu, FiShare2, FiFileText, FiGlobe } from 'react-icons/fi';
 import toast from 'react-hot-toast';
@@ -26,6 +27,7 @@ const AdminLayout = () => {
   const { dashboardId } = useParams();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [customizerOpen, setCustomizerOpen] = useState(false);
 
   const handleLogout = () => {
     logout();
@@ -40,16 +42,6 @@ const AdminLayout = () => {
       await profileAPI.updateMine(fd);
     } catch (err) {
       console.error('Failed to save theme', err);
-    }
-  };
-
-  const handleBgChange = async (b) => {
-    try {
-      const fd = new FormData();
-      fd.append('background', b);
-      await profileAPI.updateMine(fd);
-    } catch (err) {
-      console.error('Failed to save background', err);
     }
   };
 
@@ -89,7 +81,7 @@ const AdminLayout = () => {
   );
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 relative">
       <Sidebar />
 
       {sidebarOpen && (
@@ -100,23 +92,26 @@ const AdminLayout = () => {
       )}
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between">
+        <header className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 py-3 flex items-center justify-between z-10 relative">
           <button onClick={() => setSidebarOpen(true)} className="lg:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700">
             <FiMenu size={20} />
           </button>
           <h1 className="font-semibold text-gray-900 dark:text-white hidden sm:block">Dashboard</h1>
           <div className="flex items-center gap-2 ml-auto">
-            <ThemeSwitcher onThemeSelect={handleThemeChange} onBgSelect={handleBgChange} />
+            <ThemeSwitcher onThemeSelect={handleThemeChange} onOpenCustomizer={() => setCustomizerOpen(true)} />
             <button onClick={toggle} className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
               {dark ? <FiSun size={18} /> : <FiMoon size={18} />}
             </button>
           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 z-0">
           <Outlet />
         </main>
       </div>
+      
+      {/* 3D Background Customizer Modal */}
+      <BackgroundCustomizer isOpen={customizerOpen} onClose={() => setCustomizerOpen(false)} />
     </div>
   );
 };

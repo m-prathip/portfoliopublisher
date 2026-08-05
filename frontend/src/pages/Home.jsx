@@ -567,6 +567,7 @@ const Home = () => {
                 <img src={asset(activeCaseStudy.image)} alt={activeCaseStudy.title} className="w-full h-full object-cover opacity-75" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent" />
                 <button 
+                  aria-label="Close Case Study"
                   onClick={() => setActiveCaseStudy(null)}
                   className="absolute top-4 right-4 p-2 rounded-full bg-slate-950/60 text-white hover:bg-slate-950 transition-colors border border-white/10"
                 >
@@ -577,6 +578,7 @@ const Home = () => {
               <div className="p-6 bg-gradient-to-br from-accent/10 to-blue-500/10 flex justify-between items-center border-b border-white/5">
                 <h4 className="font-extrabold text-lg text-gray-900 dark:text-white">Project Case Study</h4>
                 <button 
+                  aria-label="Close Case Study"
                   onClick={() => setActiveCaseStudy(null)}
                   className="p-2 rounded-full bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 text-gray-800 dark:text-white transition-colors"
                 >

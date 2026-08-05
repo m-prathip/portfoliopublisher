@@ -25,6 +25,10 @@ const refreshClient = axios.create({ baseURL: `${BASE_URL}/api`, withCredentials
 const apiCache = new Map();
 
 api.interceptors.request.use((config) => {
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'];
+  }
+
   if (config.method === 'get') {
     const key = config.url;
     if (apiCache.has(key)) {
@@ -80,7 +84,9 @@ api.interceptors.response.use(
   }
 );
 
-const mp = { headers: { 'Content-Type': 'multipart/form-data' } };
+// We don't manually set multipart/form-data because it drops the boundary.
+// The interceptor deletes Content-Type for FormData, letting the browser set it.
+const mp = {};
 
 // ── Auth ────────────────────────────────────────────────
 export const authAPI = {

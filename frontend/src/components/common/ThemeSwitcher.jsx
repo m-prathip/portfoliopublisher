@@ -1,13 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTheme } from '../../context/ThemeContext';
-import { useBackground } from '../../context/BackgroundContext';
-import { FiDroplet, FiSun, FiMoon, FiCheck } from 'react-icons/fi';
+import { FiDroplet, FiSun, FiMoon, FiCheck, FiSliders } from 'react-icons/fi';
 
-// Floating-panel theme switcher: light/dark segmented toggle + a grid of
-// live preview cards for all 10 palettes.
-const ThemeSwitcher = ({ align = 'right', onThemeSelect, onBgSelect }) => {
+const ThemeSwitcher = ({ align = 'right', onThemeSelect, onOpenCustomizer }) => {
   const { mode, setMode, theme, setTheme, themes } = useTheme();
-  const { bg, setBg, backgrounds } = useBackground();
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
@@ -41,7 +37,7 @@ const ThemeSwitcher = ({ align = 'right', onThemeSelect, onBgSelect }) => {
 
           {/* Palette preview cards */}
           <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Theme</p>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 mb-4">
             {themes.map((t) => {
               const active = t.id === theme;
               return (
@@ -61,21 +57,16 @@ const ThemeSwitcher = ({ align = 'right', onThemeSelect, onBgSelect }) => {
             })}
           </div>
 
-          {/* 3D background selector */}
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mt-4 mb-2">Background</p>
-          <div className="grid grid-cols-2 gap-1.5">
-            {backgrounds.map((b) => (
-              <button key={b.id} onClick={() => {
-                setBg(b.id);
-                if (onBgSelect) onBgSelect(b.id);
-              }}
-                className={`text-xs px-2 py-1.5 rounded-lg border transition-colors text-left truncate
-                  ${b.id === bg ? 'border-primary-500 text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20'
-                                : 'border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:border-gray-300'}`}>
-                {b.name}
-              </button>
-            ))}
-          </div>
+          {/* 3D background selector trigger */}
+          <button 
+            onClick={() => {
+              setOpen(false);
+              if (onOpenCustomizer) onOpenCustomizer();
+            }}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-sm font-medium text-gray-700 dark:text-gray-200 transition-colors"
+          >
+            <FiSliders size={14} /> Customize 3D Background
+          </button>
         </div>
       )}
     </div>

@@ -11,7 +11,7 @@ const Field = React.memo(({ label, children }) => (
 ));
 
 const AdminProfile = () => {
-  console.log("AdminProfile Render");
+
 
   const [form, setForm] = useState({
     name: '',
@@ -40,7 +40,7 @@ const AdminProfile = () => {
   const [current, setCurrent] = useState(null);
 
   useEffect(() => {
-  console.log("PROFILE API CALLED");
+
 
   profileAPI.getMine()
     .then(res => {
@@ -68,7 +68,7 @@ const AdminProfile = () => {
 }, []);
 
   const handleChange = (e) => {
-    console.log("Typing:", e.target.name, e.target.value);
+
 
     const { name, value } = e.target;
 

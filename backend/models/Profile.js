@@ -19,7 +19,8 @@ const profileSchema = new mongoose.Schema({
   },
   domains: [{ type: String }],
   theme: { type: String, default: 'openai' },
-  background: { type: String, default: 'particles' }
+  background: { type: String, default: 'particles' },
+  backgroundConfig: { type: Object, default: {} }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Profile', profileSchema);
