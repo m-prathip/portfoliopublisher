@@ -1,6 +1,23 @@
 import { motion, AnimatePresence } from 'framer-motion';
 
 const CONTENT_MAP = {
+  Features: {
+    title: 'Core Features',
+    content: (
+      <div className="space-y-4 text-sm text-slate-600">
+        <p>
+          Portfolio Publisher gives you everything you need to stand out:
+        </p>
+        <ul className="list-disc pl-5 space-y-2">
+          <li><strong>20+ 3D Backgrounds:</strong> Beautiful, interactive WebGL themes that run smoothly in the browser.</li>
+          <li><strong>Real-time Customization:</strong> Adjust animation speed, density, and glow instantly.</li>
+          <li><strong>Personal URL & QR Code:</strong> Instantly share your portfolio with recruiters anywhere.</li>
+          <li><strong>Developer-Focused:</strong> Showcase GitHub stats, projects, and tech stacks elegantly.</li>
+          <li><strong>Modern Minimalist Design:</strong> Clean layouts built for high conversion and readability.</li>
+        </ul>
+      </div>
+    ),
+  },
   Documentation: {
     title: 'Documentation',
     content: (
