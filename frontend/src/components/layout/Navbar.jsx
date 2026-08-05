@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { FiMenu, FiX } from 'react-icons/fi';
+import { FiMenu, FiX, FiSun, FiMoon } from 'react-icons/fi';
+import { useTheme } from '../../context/ThemeContext';
 
 // Rendered inside a specific user's /u/:username portfolio, so every link
 // stays scoped to that portfolio rather than the publisher root.
 const Navbar = ({ username, profile }) => {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { dark, toggle } = useTheme();
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
@@ -43,6 +45,13 @@ const Navbar = ({ username, profile }) => {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
+            <button 
+              onClick={toggle} 
+              aria-label="Toggle Dark Mode"
+              className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              {dark ? <FiSun size={18} /> : <FiMoon size={18} />}
+            </button>
           </div>
         </div>
       </div>
