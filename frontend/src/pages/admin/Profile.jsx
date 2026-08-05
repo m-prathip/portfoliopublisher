@@ -27,7 +27,8 @@ const AdminProfile = () => {
       portfolio: '',
       twitter: '',
       instagram: ''
-    }
+    },
+    mode: 'dark'
   });
 
   const [files, setFiles] = useState({
@@ -60,7 +61,8 @@ const AdminProfile = () => {
           portfolio: p.social?.portfolio || '',
           twitter: p.social?.twitter || '',
           instagram: p.social?.instagram || ''
-        }
+        },
+        mode: p.mode || 'dark'
       });
     })
     .catch(() => {})
@@ -237,15 +239,29 @@ const AdminProfile = () => {
           </Field>
         </div>
 
-        <Field label="Interested Domains">
-          <input
-            name="domains"
-            className="input"
-            value={form.domains}
-            onChange={handleChange}
-            placeholder="Web Dev, ML, Cloud (comma-separated)"
-          />
-        </Field>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <Field label="Interested Domains">
+            <input
+              name="domains"
+              className="input"
+              value={form.domains}
+              onChange={handleChange}
+              placeholder="Web Dev, ML, Cloud (comma-separated)"
+            />
+          </Field>
+
+          <Field label="Portfolio Mode">
+            <select
+              name="mode"
+              className="input"
+              value={form.mode}
+              onChange={handleChange}
+            >
+              <option value="dark">Dark Mode (Best for 3D)</option>
+              <option value="light">Light Mode</option>
+            </select>
+          </Field>
+        </div>
 
         <div>
           <p className="label mb-3">Social Links</p>

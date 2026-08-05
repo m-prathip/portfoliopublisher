@@ -128,7 +128,7 @@ const PortfolioLayout = () => {
         setProfile(res.data);
         if (res.data.theme) setTheme(res.data.theme);
         if (res.data.background) setBg(res.data.background);
-        setMode?.('dark'); // 3D backgrounds look best in dark mode
+        setMode?.(res.data.mode || 'dark'); // Default to dark mode for 3D backgrounds
         setStatus(res.data.isSetup ? 'ready' : 'not-setup');
       })
       .catch((err) => {
@@ -137,7 +137,7 @@ const PortfolioLayout = () => {
           setProfile(MOCK_DEMO_PROFILE);
           setTheme(MOCK_DEMO_PROFILE.theme);
           setBg(MOCK_DEMO_PROFILE.background);
-          setMode?.('dark');
+          setMode?.(MOCK_DEMO_PROFILE.mode || 'dark');
           setStatus('ready');
         } else {
           setStatus(err.response?.status === 404 ? 'not-found' : 'not-setup');

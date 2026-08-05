@@ -18,7 +18,9 @@ const profileSchema = new mongoose.Schema({
     instagram: { type: String }
   },
   domains: [{ type: String }],
-  theme: { type: String, default: 'openai' },
+  isSetup: { type: Boolean, default: false },
+  mode: { type: String, enum: ['light', 'dark'], default: 'dark' },
+  theme: { type: String, default: 'ocean' },
   background: { type: String, default: 'particles' },
   backgroundConfig: { type: Object, default: {} }
 }, { timestamps: true });
