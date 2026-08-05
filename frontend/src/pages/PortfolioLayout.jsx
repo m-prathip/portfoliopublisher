@@ -128,6 +128,7 @@ const PortfolioLayout = () => {
         setProfile(res.data);
         if (res.data.theme) setTheme(res.data.theme);
         if (res.data.background) setBg(res.data.background);
+        setMode?.('dark'); // 3D backgrounds look best in dark mode
         setStatus(res.data.isSetup ? 'ready' : 'not-setup');
       })
       .catch((err) => {

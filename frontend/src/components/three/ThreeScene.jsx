@@ -46,7 +46,7 @@ function ParticleEngine({ color, config }) {
         <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} usage={THREE.DynamicDrawUsage} />
       </bufferGeometry>
       <pointsMaterial 
-        size={shape === 'stars' ? 0.05 : 0.035} 
+        size={shape === 'stars' ? 0.08 : 0.06} 
         color={color} 
         transparent 
         opacity={0.8 * glow} 
@@ -103,11 +103,11 @@ function LineEngine({ color, config }) {
     <group ref={group}>
       <points>
         <bufferGeometry key={`pts-${count}`}><bufferAttribute attach="attributes-position" count={count} array={nodes} itemSize={3} /></bufferGeometry>
-        <pointsMaterial size={0.07} color={color} transparent opacity={0.9 * glow} depthWrite={false} />
+        <pointsMaterial size={0.12} color={color} transparent opacity={0.9 * glow} depthWrite={false} />
       </points>
       <lineSegments>
         <bufferGeometry key={`lines-${lines.length}`}><bufferAttribute attach="attributes-position" count={lines.length / 3} array={lines} itemSize={3} /></bufferGeometry>
-        <lineBasicMaterial color={color} transparent opacity={0.2 * glow} />
+        <lineBasicMaterial color={color} transparent opacity={0.3 * glow} />
       </lineSegments>
     </group>
   );
