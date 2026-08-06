@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { FiArrowRight } from 'react-icons/fi';
 
@@ -12,6 +13,8 @@ const wordVariants = {
 };
 
 const HeroSection = () => {
+  const [showVideo, setShowVideo] = useState(false);
+
   return (
     <section className="relative min-h-[90vh] flex flex-col items-center justify-center pt-24 pb-16 bg-white overflow-hidden">
       {/* Minimal grid background */}
@@ -93,14 +96,36 @@ const HeroSection = () => {
             Start Building Free
             <FiArrowRight className="ml-2 w-5 h-5" />
           </Link>
-          <Link
-            to="/u/demo"
+          <button
+            onClick={() => setShowVideo(true)}
             className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 rounded-xl font-semibold flex items-center justify-center transition-colors shadow-sm"
           >
-            View Live Demo
-          </Link>
+            View Demo Video
+          </button>
         </motion.div>
       </div>
+
+      <AnimatePresence>
+        {showVideo && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 p-4"
+            onClick={() => setShowVideo(false)}
+          >
+            <div className="relative max-w-4xl w-full bg-slate-900 rounded-2xl overflow-hidden shadow-2xl border border-slate-800" onClick={e => e.stopPropagation()}>
+              <button
+                onClick={() => setShowVideo(false)}
+                className="absolute top-4 right-4 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+              >
+                ✕
+              </button>
+              <img src="/demo_video.webp" alt="Demo Video" className="w-full h-auto" />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };

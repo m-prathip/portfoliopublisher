@@ -92,10 +92,10 @@ const CONTENT_MAP = {
     content: (
       <div className="space-y-4 text-sm text-slate-600">
         <p>
-          Portfolio Publisher was born from a simple idea: professionals shouldn't need to be web developers to have a stunning, interactive online presence.
+          Portfolio Publisher was developed by <strong>PRATHIP M</strong>, a passionate software engineer with a strong foundation in both traditional and modern computing technologies.
         </p>
         <p>
-          We provide the tools, themes, and infrastructure so you can focus on what matters most—showcasing your skills, experiences, and achievements to land your dream role.
+          PRATHIP holds a B.Tech in Artificial Intelligence & Data Science from PMC TECH Engineering College, as well as a Diploma in Computer Engineering. This diverse educational background drives the platform's vision: empowering professionals with an intelligent, seamless, and stunning online presence to easily showcase their unique skills and achievements.
         </p>
       </div>
     ),
