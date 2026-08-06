@@ -213,6 +213,8 @@ VITE_API_URL=https://student-portfolio-ckpc.onrender.com
 ## ✨ Features
 
 - **Multi-user accounts** — anyone can sign up and get an isolated, fully-owned portfolio
+- **AI Assistant Widget** — embedded intelligent assistant that answers questions about skills and experiences
+- **Interactive 3D Backgrounds** — customizable visual themes including neural networks, matrices, and cosmic spaces
 - **Shareable link & downloadable QR code** for every account (`/admin/share`)
 - **Permanent username-based URLs**: `yourapp.com/u/<username>`
 - **Admin dashboard** with full CRUD for every section, scoped to the logged-in user
@@ -235,6 +237,16 @@ Install these extensions:
 - **ES7+ React snippets** — component shortcuts
 - **MongoDB for VS Code** — database explorer
 - **REST Client** — test APIs without Postman
+
+---
+
+## 👨‍💻 About the Developer
+
+**PRATHIP M**
+- **B.Tech Artificial Intelligence & Data Science**, PMC TECH Engineering College
+- **Diploma in Computer Engineering**
+
+A passionate software engineer with a strong foundation in both traditional and modern computing technologies. Dedicated to building intelligent, seamless, and stunning online experiences.
 
 ---
 
