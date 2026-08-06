@@ -94,7 +94,7 @@ const HeroSection = () => {
             <FiArrowRight className="ml-2 w-5 h-5" />
           </Link>
           <Link
-            to="/demo"
+            to="/u/demo"
             className="w-full sm:w-auto px-8 py-4 bg-white hover:bg-slate-50 text-slate-900 border border-slate-200 rounded-xl font-semibold flex items-center justify-center transition-colors shadow-sm"
           >
             View Live Demo
