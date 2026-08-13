@@ -140,7 +140,11 @@ const PortfolioLayout = () => {
           setMode?.(MOCK_DEMO_PROFILE.mode || 'dark');
           setStatus('ready');
         } else {
-          setStatus(err.response?.status === 404 ? 'not-found' : 'not-setup');
+          if (err.response?.status === 404) {
+            setStatus('not-found');
+          } else {
+            setStatus('error');
+          }
         }
       });
     return () => { cancelled = true; };
@@ -155,6 +159,7 @@ const PortfolioLayout = () => {
   if (status === 'loading') return <PageLoader />;
   if (status === 'not-found') return <EmptyState title="Portfolio not found" text={`There's no portfolio at @${username}.`} />;
   if (status === 'not-setup') return <EmptyState title="Still under construction" text={`@${username} hasn't published their portfolio yet — check back soon.`} />;
+  if (status === 'error') return <EmptyState title="Temporary Error" text={`We couldn't load @${username}'s portfolio right now. Please refresh the page or try again later.`} />;
 
   return (
     <div className="flex flex-col min-h-screen relative">

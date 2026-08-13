@@ -56,8 +56,9 @@ const getProjectCategory = (p) => {
   const title = (p.title || '').toLowerCase();
   const desc = (p.description || '').toLowerCase();
   
+  const aiRegex = /\b(ai|ml|llm|machine learning|artificial intelligence)\b/;
   if (stack.some(t => ['tensorflow', 'pytorch', 'ml', 'ai', 'llm', 'openai', 'deep learning'].includes(t)) || 
-      title.includes('ai') || title.includes('machine learning') || desc.includes('ai ') || desc.includes('intelligence')) {
+      aiRegex.test(title) || aiRegex.test(desc)) {
     return 'AI';
   }
   if (stack.some(t => ['data science', 'pandas', 'numpy', 'scikit', 'analytics', 'r'].includes(t)) ||
@@ -82,7 +83,7 @@ const getPremiumProjectMeta = (p, index) => {
     problemSolved: p.problemSolved || "A specialized system designed to address critical performance bottlenecks and scale operations.",
     businessImpact: p.businessImpact || "Improved customer retention and reduced operational query latency across production environments.",
     keyFeatures: featArray.length > 0 ? featArray : ["Automated workflows", "Scalable data ingestion", "Responsive visual interface"],
-    performanceScore: p.performanceScore || 98,
+    performanceScore: p.performanceScore || 'N/A',
     completionPercentage: p.completionPercentage || 100,
     timeline: p.timeline || "2 Months",
     responsive: true,
@@ -147,7 +148,7 @@ const Home = () => {
   ].filter((l) => social[l.key]), [social]);
 
   const roles = [profile?.title, ...(profile?.domains || [])].filter(Boolean);
-  const typed = 'Software Developer';
+  const typed = useTypewriter(roles);
   const topSkills = skills.slice(0, 6).map((s) => s.name);
 
   // Recruiter stats values

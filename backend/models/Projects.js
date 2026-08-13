@@ -13,7 +13,7 @@ const projectSchema = new mongoose.Schema({
   problemSolved: { type: String, default: '' },
   businessImpact: { type: String, default: '' },
   keyFeatures: { type: String, default: '' },
-  performanceScore: { type: Number, default: 99 },
+  performanceScore: { type: String, default: 'N/A' },
   timeline: { type: String, default: '' },
   completionPercentage: { type: Number, default: 100 },
   status: { type: String, default: '' }

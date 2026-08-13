@@ -121,7 +121,7 @@ export const AdminProjects = () => {
     { name: 'problemSolved', label: 'Problem Solved (Case Study)', type: 'textarea', placeholder: 'Describe the problem this project solved…' },
     { name: 'businessImpact', label: 'Business Impact (Case Study)', type: 'textarea', placeholder: 'Describe the business impact / key achievements…' },
     { name: 'keyFeatures', label: 'Key Deliverables / Features (Case Study)', placeholder: 'e.g. Real-time Caching, Stripe Checkout', help: 'Comma-separated list' },
-    { name: 'performanceScore', label: 'Performance Score (Lighthouse 0-100)', type: 'number', placeholder: 'e.g. 99' },
+    { name: 'performanceScore', label: 'Performance Score (Lighthouse 0-100)', type: 'text', placeholder: 'e.g. 99 or N/A' },
     { name: 'timeline', label: 'Development Timeline', placeholder: 'e.g. 3 Months, 2 Weeks' },
     { name: 'completionPercentage', label: 'Completion Percentage (0-100)', type: 'number', placeholder: 'e.g. 100' },
     { name: 'status', label: 'Project Status', placeholder: 'e.g. Production Ready, In Active Dev', datalist: ['Production Ready', 'Beta', 'In Active Dev', 'Prototype'] },
