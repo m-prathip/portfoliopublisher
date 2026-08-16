@@ -22,6 +22,8 @@ import Seo from '../components/common/Seo';
 import { PageLoader } from '../components/common/Spinner';
 import useTypewriter from '../hooks/useTypewriter';
 
+import { getCategoryByNameOrId } from '../data/skillCategories';
+
 const asset = (p) => (p?.startsWith('/uploads') ? `${BASE_URL}${p}` : p);
 const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
 
@@ -91,15 +93,6 @@ const getPremiumProjectMeta = (p, index) => {
   };
 };
 
-const getSkillCategory = (s) => {
-  const cat = (s.category || '').toLowerCase().trim();
-  if (cat.includes('front') || cat.includes('react') || cat.includes('ui') || cat.includes('design')) return 'Frontend';
-  if (cat.includes('back') || cat.includes('node') || cat.includes('api') || cat.includes('server')) return 'Backend';
-  if (cat.includes('ai') || cat.includes('ml') || cat.includes('machine') || cat.includes('tensor') || cat.includes('learn')) return 'AI/ML';
-  if (cat.includes('db') || cat.includes('data') || cat.includes('sql') || cat.includes('mongo') || cat.includes('postgres')) return 'Databases';
-  return 'Tools';
-};
-
 const Home = () => {
   const { profile, username } = useOutletContext();
   const [data, setData] = useState({ skills: [], achievements: [], activities: [], projects: [], experience: [], certificates: [] });
@@ -130,12 +123,26 @@ const Home = () => {
 
   const { skills = [], achievements = [], activities = [], projects = [], experience = [], certificates = [], whyHire = [] } = data || {};
 
-  // Group skills into the 5 specified categories
+  // Group skills into predefined short categories sorted by display order
   const groupedSkills = useMemo(() => {
-    const groups = { 'Frontend': [], 'Backend': [], 'AI/ML': [], 'Databases': [], 'Tools': [] };
-    skills.forEach(s => { groups[getSkillCategory(s)].push(s); });
-    Object.keys(groups).forEach(k => { if (groups[k].length === 0) delete groups[k]; });
-    return groups;
+    const map = new Map();
+
+    skills.forEach(s => {
+      const catObj = getCategoryByNameOrId(s.category);
+      const catKey = catObj ? catObj.name : (s.category || 'Code');
+      const catDesc = catObj ? catObj.description : catKey;
+      const order = catObj ? catObj.displayOrder : 999;
+
+      if (!map.has(catKey)) {
+        map.set(catKey, { name: catKey, description: catDesc, order, skills: [] });
+      }
+      map.get(catKey).skills.push(s);
+    });
+
+    // Sort categories by predefined display order, omit empty categories
+    return Array.from(map.values())
+      .filter(cat => cat.skills.length > 0)
+      .sort((a, b) => a.order - b.order);
   }, [skills]);
 
   const social = profile?.social || {};
@@ -394,22 +401,29 @@ const Home = () => {
             
             {/* Staggered dashboard categories */}
             <div className="grid md:grid-cols-5 gap-6">
-              {Object.entries(groupedSkills).map(([cat, list], catIdx) => (
+              {groupedSkills.map((categoryGroup, catIdx) => (
                 <motion.div 
-                  key={cat}
+                  key={categoryGroup.name}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: catIdx * 0.1 }}
                   className="md:col-span-5 space-y-4"
                 >
-                  <h3 className="text-xs font-bold text-accent uppercase tracking-widest flex items-center gap-2">
-                    <span className="w-1.5 h-3 bg-accent green-bullet-glow rounded-full" />
-                    {cat}
-                  </h3>
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-2 h-2 bg-accent green-bullet-glow rounded-full shrink-0" />
+                    <h3 className="text-sm font-extrabold text-gray-900 dark:text-white uppercase tracking-wider">
+                      {categoryGroup.name}
+                    </h3>
+                    {categoryGroup.description && categoryGroup.description.toLowerCase() !== categoryGroup.name.toLowerCase() && (
+                      <span className="text-xs text-gray-500 dark:text-gray-400 font-medium">
+                        — {categoryGroup.description}
+                      </span>
+                    )}
+                  </div>
                   
                   <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {list.map((s, idx) => {
+                    {categoryGroup.skills.map((s, idx) => {
                       const levelName = s.proficiencyLevel || (s.level >= 85 ? 'Expert' : s.level >= 70 ? 'Advanced' : s.level >= 50 ? 'Intermediate' : 'Learning');
                       const expYearsVal = s.yearsOfExperience || (s.level >= 85 ? '4+ Yrs' : s.level >= 70 ? '3 Yrs' : s.level >= 50 ? '2 Yrs' : '1 Yr');
                       const projDetails = s.projectsCount || 'Active production use';

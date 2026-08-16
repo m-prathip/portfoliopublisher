@@ -122,6 +122,40 @@ const AdminCRUD = ({ title, items = [], fields = [], api, onRefresh, itemLabel =
                         onChange={e => setForm({...form,[field.name]:e.target.value})} className="w-full" />
                       <span className="text-sm text-gray-500">{form[field.name] || 0}%</span>
                     </div>
+                  ) : field.type === 'select' ? (
+                    <select
+                      value={form[field.name] || ''}
+                      onChange={e => {
+                        const val = e.target.value;
+                        setForm(prev => {
+                          let next = { ...prev, [field.name]: val };
+                          if (field.onChangeEffect) {
+                            next = field.onChangeEffect(val, next);
+                          }
+                          return next;
+                        });
+                      }}
+                      className="input cursor-pointer"
+                    >
+                      <option value="">{field.placeholder || '-- Select Option --'}</option>
+                      {field.optionGroups ? (
+                        Object.entries(field.optionGroups).map(([grpName, opts]) => (
+                          <optgroup key={grpName} label={grpName}>
+                            {opts.map(opt => (
+                              <option key={opt.value} value={opt.value}>
+                                {opt.label}
+                              </option>
+                            ))}
+                          </optgroup>
+                        ))
+                      ) : (
+                        (field.options || []).map(opt => {
+                          const val = typeof opt === 'string' ? opt : opt.value;
+                          const lbl = typeof opt === 'string' ? opt : opt.label;
+                          return <option key={val} value={val}>{lbl}</option>;
+                        })
+                      )}
+                    </select>
                   ) : field.type === 'file' ? (
                     <input type="file" accept={field.accept || 'image/*'}
                       onChange={e => setForm({...form,[field.name]:e.target.files[0]})}

@@ -40,13 +40,18 @@ export const AdminExperience = () => {
 
 // ------ SKILLS ------
 import { skillsAPI } from '../../services/api';
-const SKILL_CATEGORIES = {
-  'Frontend': ['react', 'react.js', 'vue', 'angular', 'html', 'css', 'javascript', 'typescript', 'next.js', 'tailwind'],
-  'Backend': ['node.js', 'node', 'express', 'python', 'django', 'java', 'spring', 'c#', '.net', 'php', 'ruby', 'go'],
-  'Database': ['mongodb', 'sql', 'mysql', 'postgresql', 'redis', 'firebase', 'oracle'],
-  'DevOps': ['docker', 'kubernetes', 'aws', 'azure', 'gcp', 'linux', 'ci/cd', 'jenkins', 'terraform'],
-  'Tools': ['git', 'github', 'gitlab', 'figma', 'postman', 'jira']
-};
+import { SKILL_CATEGORIES, CATEGORY_GROUPS, autoSuggestCategory, getCategoryByNameOrId } from '../../data/skillCategories';
+
+// Build grouped select options for Admin CRUD
+const SKILL_CATEGORY_OPTION_GROUPS = {};
+CATEGORY_GROUPS.forEach(grp => {
+  SKILL_CATEGORY_OPTION_GROUPS[grp] = SKILL_CATEGORIES
+    .filter(c => c.group === grp && c.isActive)
+    .map(c => ({
+      value: c.name,
+      label: `${c.name} — ${c.description}`
+    }));
+});
 
 export const AdminSkills = () => {
   const [items, setItems] = useState([]);
@@ -60,14 +65,12 @@ export const AdminSkills = () => {
       name: 'name', 
       label: 'Skill Name', 
       required: true, 
-      placeholder: 'React.js',
+      placeholder: 'Python, Machine Learning, Power BI...',
       onChangeEffect: (val, form) => {
-        if (form.category) return form; // Don't overwrite if user already typed something
-        const search = val.toLowerCase().trim();
-        for (const [cat, skills] of Object.entries(SKILL_CATEGORIES)) {
-          if (skills.includes(search)) {
-            return { ...form, category: cat.charAt(0).toUpperCase() + cat.slice(1) };
-          }
+        if (form.category) return form; // Keep existing if selected
+        const suggested = autoSuggestCategory(val);
+        if (suggested) {
+          return { ...form, category: suggested };
         }
         return form;
       }
@@ -75,9 +78,12 @@ export const AdminSkills = () => {
     { name: 'level', label: 'Proficiency Level (0-100)', required: true, type: 'range', defaultValue: 80 },
     { 
       name: 'category', 
-      label: 'Category', 
-      placeholder: 'Frontend, Backend, DevOps…',
-      datalist: ['Frontend', 'Backend', 'Database', 'DevOps', 'Tools', 'Design', 'Mobile', 'Other']
+      label: 'Skill Category',
+      type: 'select',
+      required: true,
+      placeholder: '-- Select Professional Category --',
+      optionGroups: SKILL_CATEGORY_OPTION_GROUPS,
+      help: 'Select the short category name matching your skill area.'
     },
     {
       name: 'proficiencyLevel',
@@ -98,7 +104,7 @@ export const AdminSkills = () => {
     {
       name: 'keyAreas',
       label: 'Key Areas / Highlights',
-      placeholder: 'e.g. Caching, UI Components, Optimization'
+      placeholder: 'e.g. Caching, Model Training, UI Components'
     }
   ]} />;
 };
