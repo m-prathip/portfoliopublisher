@@ -105,22 +105,26 @@ export const autoSuggestCategory = (skillName) => {
   const s = String(skillName).trim().toLowerCase();
 
   // Code / Languages
-  if (['python', 'java', 'c++', 'cpp', 'c#', 'javascript', 'js', 'typescript', 'ts', 'rust', 'golang', 'go', 'php', 'ruby', 'swift', 'kotlin'].includes(s)) {
+  if (['python', 'java', 'c', 'c++', 'cpp', 'c#', 'csharp', 'javascript', 'js', 'typescript', 'ts', 'rust', 'golang', 'go', 'php', 'ruby', 'swift', 'kotlin', 'dart', 'r'].includes(s)) {
     return 'Code';
   }
-  // Viz
-  if (s.includes('power bi') || s.includes('powerbi') || s.includes('tableau') || s.includes('visualization') || s.includes('d3')) {
+  // Viz & Analytics
+  if (s.includes('power bi') || s.includes('powerbi') || s.includes('tableau') || s.includes('plotly') || s.includes('excel') || s.includes('looker') || s.includes('visualization') || s.includes('d3')) {
     return 'Viz';
   }
-  // ML / DL / GenAI / LLM
+  // GenAI & LLM
+  if (s.includes('openai') || s.includes('chatgpt') || s.includes('gemini') || s.includes('claude') || s.includes('llama') || s.includes('mistral') || s.includes('langgraph') || s.includes('ollama') || s.includes('rag') || s.includes('prompt engineering') || s.includes('llm') || s.includes('gpt')) {
+    return 'GenAI';
+  }
+  // ML / DL / Frameworks
   if (s.includes('tensorflow') || s.includes('pytorch') || s.includes('keras') || s.includes('deep learning')) {
     return 'DL';
   }
-  if (s.includes('openai') || s.includes('gpt') || s.includes('llm') || s.includes('prompt engineering') || s.includes('langchain')) {
-    return 'GenAI';
-  }
-  if (s.includes('machine learning') || s.includes('scikit') || s.includes('sklearn') || s === 'ml') {
+  if (s.includes('machine learning') || s.includes('scikit') || s.includes('sklearn') || s.includes('xgboost') || s.includes('lightgbm') || s === 'ml') {
     return 'ML';
+  }
+  if (s.includes('hugging face') || s.includes('langchain')) {
+    return 'GenAI';
   }
   if (s.includes('natural language') || s.includes('nlp') || s.includes('spacy') || s.includes('nltk')) {
     return 'NLP';
@@ -128,34 +132,50 @@ export const autoSuggestCategory = (skillName) => {
   if (s.includes('computer vision') || s.includes('opencv') || s.includes('yolo')) {
     return 'CV';
   }
-  if (s.includes('data analysis') || s.includes('data science') || s.includes('pandas') || s.includes('numpy')) {
+  if (s.includes('data science') || s.includes('data analysis') || s.includes('pandas') || s.includes('numpy') || s.includes('seaborn') || s.includes('scipy') || s.includes('jupyter')) {
     return 'Data';
   }
+  if (s.includes('statistics') || s.includes('stats')) {
+    return 'Stats';
+  }
   // Databases / SQL / NoSQL
-  if (s.includes('postgres') || s.includes('mysql') || s.includes('sqlite') || s.includes('oracle') || s === 'sql') {
+  if (s.includes('postgres') || s.includes('mysql') || s.includes('sqlite') || s.includes('oracle') || s.includes('sql server') || s.includes('mssql') || s === 'sql') {
     return 'SQL';
   }
-  if (s.includes('mongo') || s.includes('redis') || s.includes('firebase') || s.includes('dynamodb') || s === 'nosql') {
+  if (s.includes('mongo') || s.includes('redis') || s.includes('firebase') || s.includes('cassandra') || s.includes('supabase') || s.includes('neo4j') || s === 'nosql') {
     return 'NoSQL';
   }
   if (s.includes('database') || s === 'db') {
     return 'DB';
   }
   // Web / Frontend / Backend
-  if (['html', 'css', 'html5', 'css3', 'react', 'react.js', 'vue', 'vue.js', 'angular', 'tailwind', 'next.js', 'nextjs'].includes(s)) {
+  if (['html', 'css', 'html5', 'css3', 'react', 'react.js', 'vue', 'vue.js', 'angular', 'svelte', 'bootstrap', 'tailwind', 'material ui', 'mui', 'vite', 'next.js', 'nextjs'].includes(s)) {
     return 'Front';
   }
-  if (['node', 'node.js', 'express', 'express.js', 'fastapi', 'django', 'flask', 'spring boot'].includes(s)) {
+  if (['node', 'node.js', 'express', 'express.js', 'fastapi', 'django', 'flask', 'spring boot', '.net', 'dotnet', 'laravel', 'nestjs'].includes(s)) {
     return 'Back';
+  }
+  if (s.includes('rest api') || s.includes('graphql') || s.includes('postman') || s.includes('swagger') || s.includes('websocket')) {
+    return 'API';
   }
   if (s.includes('web development') || s.includes('web')) {
     return 'Web';
   }
-  // Cloud / DevOps / Docker / Git
+  // Mobile
+  if (s.includes('android studio') || s.includes('flutter') || s.includes('react native') || s === 'ios' || s === 'android') {
+    return 'Mobile';
+  }
+  // Cloud / DevOps / Infrastructure
   if (s === 'docker' || s.includes('container')) return 'Docker';
-  if (s === 'git' || s === 'github' || s === 'gitlab') return 'Git';
-  if (s.includes('aws') || s.includes('azure') || s.includes('gcp') || s.includes('cloud')) return 'Cloud';
-  if (s.includes('devops') || s.includes('kubernetes') || s.includes('k8s')) return 'DevOps';
+  if (s === 'git' || s === 'github' || s === 'gitlab' || s === 'bitbucket') return 'Git';
+  if (s.includes('aws') || s.includes('azure') || s.includes('gcp') || s.includes('cloud') || s.includes('vercel') || s.includes('render') || s.includes('cloudflare') || s.includes('digitalocean') || s.includes('netlify')) return 'Cloud';
+  if (s.includes('devops') || s.includes('kubernetes') || s.includes('jenkins') || s.includes('terraform') || s.includes('ansible') || s.includes('nginx') || s.includes('ci/cd')) return 'DevOps';
+  // Cybersecurity & Tools & Computer Science
+  if (s.includes('cyber') || s.includes('kali') || s.includes('wireshark') || s.includes('burp') || s.includes('metasploit')) return 'Cyber';
+  if (s.includes('vs code') || s.includes('visual studio') || s.includes('intellij') || s.includes('pycharm') || s.includes('figma') || s.includes('notion')) return 'Tools';
+  if (s.includes('adobe') || s.includes('photoshop') || s.includes('illustrator') || s.includes('ui/ux') || s.includes('ui') || s.includes('ux')) return 'UI';
+  if (s.includes('data structures') || s.includes('algorithms') || s.includes('system design') || s.includes('operating systems') || s.includes('computer networks') || s.includes('software engineering') || s.includes('object-oriented') || s.includes('computer architecture')) return 'DSA';
 
   return '';
 };
+

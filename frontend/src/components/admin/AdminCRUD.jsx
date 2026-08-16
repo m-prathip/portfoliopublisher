@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FiPlus, FiEdit2, FiTrash2, FiX, FiCheck } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import Spinner from '../common/Spinner';
+import { getTechnologyLogo, getTechnologyMetadata } from '../../data/technologyIconRegistry';
 
 /**
  * Generic admin CRUD table/form component.
@@ -180,6 +181,21 @@ const AdminCRUD = ({ title, items = [], fields = [], api, onRefresh, itemLabel =
                           {field.datalist.map(opt => <option key={opt} value={opt} />)}
                         </datalist>
                       )}
+                      {itemLabel === 'Skill' && field.name === 'name' && form.name && (
+                        <div className="flex items-center gap-3 mt-2 p-2.5 rounded-xl bg-gray-50 dark:bg-gray-700/50 border border-gray-200 dark:border-gray-600">
+                          <div className="p-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shrink-0">
+                            {getTechnologyLogo(form.name)}
+                          </div>
+                          <div className="flex flex-col">
+                            <span className="text-xs font-semibold text-gray-800 dark:text-gray-200">
+                              Auto-matched Logo: <span className="text-accent font-bold">{form.name}</span>
+                            </span>
+                            <span className="text-[10px] text-gray-500 dark:text-gray-400 capitalize">
+                              Source: {getTechnologyMetadata(form.name).iconSource === 'official' ? 'Official Brand Logo' : getTechnologyMetadata(form.name).iconSource === 'technical' ? 'Recognized Technical Concept Icon' : 'Fallback Icon'}
+                            </span>
+                          </div>
+                        </div>
+                      )}
                     </>
                   )}
                   {field.help && <p className="text-xs text-gray-500 mt-1">{field.help}</p>}
@@ -205,6 +221,11 @@ const AdminCRUD = ({ title, items = [], fields = [], api, onRefresh, itemLabel =
         <div className="space-y-3">
           {items.map(item => (
             <div key={item._id} className="card flex items-start gap-4 group">
+              {itemLabel === 'Skill' && (
+                <div className="p-2.5 rounded-xl bg-gray-100 dark:bg-gray-700/60 border border-gray-200 dark:border-gray-600 shrink-0">
+                  {getTechnologyLogo(item.name)}
+                </div>
+              )}
               <div className="flex-1 min-w-0">
                 {tableCols.map(col => (
                   <div key={col.name} className={col === tableCols[0] ? 'font-semibold text-gray-900 dark:text-white mb-1' : 'text-sm text-gray-500 dark:text-gray-400'}>

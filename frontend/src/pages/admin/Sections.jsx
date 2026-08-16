@@ -65,7 +65,25 @@ export const AdminSkills = () => {
       name: 'name', 
       label: 'Skill Name', 
       required: true, 
-      placeholder: 'Python, Machine Learning, Power BI...',
+      placeholder: 'Type or pick a tech (e.g. Python, TensorFlow, MySQL...)',
+      datalist: [
+        'Python', 'Java', 'C', 'C++', 'C#', 'JavaScript', 'TypeScript', 'Go', 'Rust', 'PHP', 'Ruby', 'Kotlin', 'Swift', 'Dart', 'R',
+        'Artificial Intelligence', 'Machine Learning', 'Deep Learning', 'Generative AI', 'Large Language Models', 'Scikit-learn', 'TensorFlow', 'PyTorch', 'Keras', 'OpenCV', 'Hugging Face', 'LangChain', 'XGBoost', 'LightGBM',
+        'OpenAI', 'ChatGPT', 'Google Gemini', 'Claude', 'Llama', 'Mistral AI', 'LangGraph', 'Ollama', 'RAG', 'Prompt Engineering',
+        'Data Science', 'Data Analysis', 'Statistics', 'Pandas', 'NumPy', 'Matplotlib', 'Seaborn', 'SciPy', 'Jupyter',
+        'Power BI', 'Tableau', 'Plotly', 'Excel', 'Looker Studio',
+        'HTML', 'CSS', 'React', 'Next.js', 'Vue.js', 'Angular', 'Svelte', 'Bootstrap', 'Tailwind CSS', 'Material UI', 'Vite',
+        'Node.js', 'Express.js', 'Django', 'Flask', 'FastAPI', 'Spring Boot', '.NET', 'Laravel', 'NestJS',
+        'MySQL', 'PostgreSQL', 'MongoDB', 'SQLite', 'Redis', 'Firebase', 'Oracle', 'Microsoft SQL Server', 'Cassandra', 'Supabase', 'Neo4j',
+        'REST API', 'GraphQL', 'Postman', 'Swagger', 'WebSocket',
+        'AWS', 'Microsoft Azure', 'Google Cloud', 'Vercel', 'Render', 'Cloudflare', 'DigitalOcean', 'Netlify',
+        'Docker', 'Kubernetes', 'Jenkins', 'GitHub Actions', 'Terraform', 'Ansible', 'Nginx', 'CI/CD',
+        'Git', 'GitHub', 'GitLab', 'Bitbucket',
+        'Linux', 'Ubuntu', 'Windows', 'macOS', 'Android', 'Android Studio', 'Flutter', 'React Native', 'iOS',
+        'Cybersecurity', 'Kali Linux', 'Wireshark', 'Burp Suite', 'Metasploit',
+        'VS Code', 'Visual Studio', 'IntelliJ IDEA', 'PyCharm', 'Figma', 'Notion', 'Adobe XD', 'Photoshop', 'Illustrator',
+        'Data Structures', 'Algorithms', 'Operating Systems', 'Computer Networks', 'System Design', 'Software Engineering', 'Object-Oriented Programming', 'Computer Architecture'
+      ],
       onChangeEffect: (val, form) => {
         if (form.category) return form; // Keep existing if selected
         const suggested = autoSuggestCategory(val);

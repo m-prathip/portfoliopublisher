@@ -23,35 +23,10 @@ import { PageLoader } from '../components/common/Spinner';
 import useTypewriter from '../hooks/useTypewriter';
 
 import { getCategoryByNameOrId } from '../data/skillCategories';
+import { getTechnologyLogo } from '../data/technologyIconRegistry';
 
 const asset = (p) => (p?.startsWith('/uploads') ? `${BASE_URL}${p}` : p);
 const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-
-const getSkillIcon = (name) => {
-  const n = name.toLowerCase().trim();
-  if (n.includes('react')) return <SiReact className="w-5 h-5" />;
-  if (n.includes('python')) return <SiPython className="w-5 h-5" />;
-  if (n.includes('javascript') || n.includes('js')) return <SiJavascript className="w-5 h-5" />;
-  if (n.includes('typescript') || n.includes('ts')) return <SiTypescript className="w-5 h-5" />;
-  if (n.includes('html')) return <SiHtml5 className="w-5 h-5" />;
-  if (n.includes('css')) return <SiCss3 className="w-5 h-5" />;
-  if (n.includes('node')) return <SiNodedotjs className="w-5 h-5" />;
-  if (n.includes('git')) return <SiGit className="w-5 h-5" />;
-  if (n.includes('docker')) return <SiDocker className="w-5 h-5" />;
-  if (n.includes('aws') || n.includes('amazon')) return <SiAmazonaws className="w-5 h-5" />;
-  if (n.includes('gcp') || n.includes('google cloud')) return <SiGooglecloud className="w-5 h-5" />;
-  if (n.includes('postgres') || n.includes('sql')) return <SiPostgresql className="w-5 h-5" />;
-  if (n.includes('mongo')) return <SiMongodb className="w-5 h-5" />;
-  if (n.includes('tensorflow')) return <SiTensorflow className="w-5 h-5" />;
-  if (n.includes('pytorch')) return <SiPytorch className="w-5 h-5" />;
-  if (n.includes('c++') || n.includes('cpp')) return <SiCplusplus className="w-5 h-5" />;
-  if (n.includes('java')) return <FaJava className="w-5 h-5" />;
-  if (n.includes('tailwind')) return <SiTailwindcss className="w-5 h-5" />;
-  if (n.includes('next')) return <SiNextdotjs className="w-5 h-5" />;
-  if (n.includes('angular')) return <SiAngular className="w-5 h-5" />;
-  if (n.includes('vue')) return <SiVuedotjs className="w-5 h-5" />;
-  return <FiZap className="w-5 h-5" />;
-};
 
 const getProjectCategory = (p) => {
   const stack = (p.techStack || []).map(t => t.toLowerCase());
@@ -448,7 +423,7 @@ const Home = () => {
 
                           <div className="flex items-center justify-between mb-4 z-10">
                             <div className="h-10 w-10 flex items-center justify-center rounded-2xl bg-white/80 dark:bg-slate-900/80 border border-white/50 dark:border-slate-800 text-gray-700 dark:text-gray-300">
-                              {getSkillIcon(s.name)}
+                              {getTechnologyLogo(s.name)}
                             </div>
                             <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
                               s.level >= 85 ? 'bg-green-500/10 text-green-400 border-green-500/20' :
