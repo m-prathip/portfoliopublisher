@@ -210,6 +210,37 @@ VITE_API_URL=https://student-portfolio-ckpc.onrender.com
 
 ---
 
+## 🔒 Security Architecture & Hardening
+
+This project incorporates production-ready security engineering controls:
+
+### 🔑 Authentication & Session Security
+- **Secure Password Hashing**: Passwords hashed using `bcryptjs` with cost factor 12.
+- **Session Management & Refresh Rotation**: Short-lived JWT access tokens stored in volatile memory, coupled with long-lived session refresh tokens in `HttpOnly`, `Secure`, `SameSite` cookies. Refresh token rotation revokes all active sessions upon detected token reuse.
+- **Email & Reset Security**: OTP verification codes hashed via HMAC/SHA-256 with short expiration windows. Password reset links issue short-lived (10m) single-purpose JWT tokens and invalidate all active sessions upon completion.
+
+### 🛡 Authorization & IDOR Protection
+- **Ownership Verification**: All state-modifying operations (`PUT`, `DELETE`, `PATCH`) and private queries explicitly enforce user ownership (`{ _id: id, user: req.user.id }`). Prevents Insecure Direct Object Reference (IDOR) attacks even if object IDs are known or guessed.
+
+### 🛑 Abuse Protection & Rate Limiting
+- **Account Creation Throttling (`registerLimiter`)**: Max 5 registrations per hour per IP.
+- **Login Brute-Force Throttling (`loginLimiter` + `lockout`)**: Max 5 login attempts per 15 minutes per IP with automated temporary account lockouts.
+- **AI Request Throttling (`aiLimiter`)**: Max 10 AI assistant queries per 15 minutes per IP to safeguard LLM quotas.
+- **Global API Throttling (`apiLimiter`)**: Max 100 requests per 15 minutes per IP.
+- **Anti-Bot & Anti-Scraping (`botProtection`)**: Blocks known automated scraping scripts, security scanners (`python-requests`, `scrapy`, `sqlmap`, `nmap`, etc.), and missing User-Agent headers on write routes.
+
+### 🧹 Input Validation & Sanitization
+- **NoSQL Injection Prevention**: `express-mongo-sanitize` strips `$` and `.` MongoDB query operators.
+- **XSS & Script Injection Prevention**: `sanitizeInput` middleware recursively strips executable `<script>` blocks, inline event handlers (`onload=`, `onerror=`), and `javascript:` URLs.
+- **Upload Hardening**: Restricts uploads strictly to images (`jpeg`, `jpg`, `png`, `gif`, `webp`) and documents (`pdf`), capped at 5MB, with randomized server-side filenames.
+
+### 🌐 Secure Deployment & Logging
+- **HTTPS Enforcement**: Automatic HTTP-to-HTTPS 301 redirection in production.
+- **HSTS Headers**: 1-year HSTS (`max-age=31536000`), `includeSubDomains`, and `preload` enabled via Helmet.
+- **Structured Security Logging**: `securityLogger.js` logs authentication events, rate-limit breaches, API errors, and suspicious traffic patterns.
+
+---
+
 ## ✨ Features
 
 - **Multi-user accounts** — anyone can sign up and get an isolated, fully-owned portfolio
@@ -219,7 +250,8 @@ VITE_API_URL=https://student-portfolio-ckpc.onrender.com
 - **Permanent username-based URLs**: `yourapp.com/u/<username>`
 - **Admin dashboard** with full CRUD for every section, scoped to the logged-in user
 - **Dark/Light mode** with system preference detection
-- **JWT authentication**, ownership-checked on every read/write
+- **Security & Anti-Abuse Hardening** — IDOR defense, rate limiting, anti-bot filtering, XSS/NoSQL sanitization, and HSTS
+- **JWT authentication with HttpOnly session cookies**
 - **Image & PDF upload** support (Multer)
 - **Search & filter** on the projects page
 - **Scroll animations** on all sections

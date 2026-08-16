@@ -267,7 +267,15 @@ const Home = () => {
                 {typed}<span className="text-accent animate-pulse">|</span>
               </p>
 
-              {profile?.about && <p className="text-gray-500 dark:text-gray-400 max-w-2xl leading-relaxed text-center mx-auto">{profile.about}</p>}
+              {profile?.about && (
+                <div className="max-w-3xl mx-auto p-6 md:p-8 mt-2 rounded-3xl glass-premium-light border border-white/40 dark:border-white/10 shadow-2xl relative group overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/40 to-white/0 dark:from-white/10 dark:to-transparent rounded-3xl pointer-events-none" />
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-gradient-to-tr from-accent/5 to-transparent pointer-events-none" />
+                  <p className="text-gray-800 dark:text-gray-100 font-medium text-base sm:text-lg leading-relaxed text-center relative z-10 tracking-wide">
+                    {profile.about}
+                  </p>
+                </div>
+              )}
 
               {profile?.location && (
                 <p className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400"><FiMapPin size={15} /> {profile.location}</p>
@@ -336,21 +344,46 @@ const Home = () => {
       {/* ───── WHY HIRE ME ───── */}
       {whyHireList.length > 0 && (
         <Section title="Why hire me?" subtitle="What I bring to your team">
-          <div className="grid sm:grid-cols-2 gap-4">
-            {whyHireList.map((w, i) => (
-              <div key={i} className="flex items-start gap-3 rounded-2xl p-5 bg-white/70 dark:bg-gray-800/60 backdrop-blur border border-white/40 dark:border-gray-700 animate-on-scroll">
-                <FiCheckCircle className="text-accent shrink-0 mt-0.5" size={20} />
-                <p className="text-gray-700 dark:text-gray-300">{w}</p>
-              </div>
-            ))}
-          </div>
-        </Section>
-      )}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {whyHireList.map((w, i) => {
+              // Attempt to parse a title and description if the user used a dash separator
+              let titlePart = '';
+              let descPart = w;
+              const separatorMatch = w.match(/^(.*?)(?:\s+[-–—]\s+|\s*:\s+)(.*)$/);
+              
+              if (separatorMatch) {
+                titlePart = separatorMatch[1];
+                descPart = separatorMatch[2];
+              }
 
-      {/* ───── ABOUT ───── */}
-      {profile?.about && (
-        <Section id="about" title="About" subtitle="A bit more about me">
-          <p className="text-gray-600 dark:text-gray-300 leading-relaxed max-w-3xl animate-on-scroll">{profile.about}</p>
+              return (
+                <motion.div 
+                  key={i} 
+                  initial={{ opacity: 0, y: 15 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.1 }}
+                  className="flex flex-col gap-3 rounded-2xl p-6 glass-premium-light border gradient-border-green hover-glow-green shadow-sm hover:shadow-md transition-all duration-300"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-accent/10 text-accent shrink-0">
+                      <FiCheckCircle size={20} />
+                    </div>
+                    {titlePart ? (
+                      <h4 className="font-extrabold text-gray-900 dark:text-white text-lg leading-tight">{titlePart}</h4>
+                    ) : (
+                      <h4 className="font-bold text-gray-900 dark:text-white text-base leading-tight line-clamp-2">{w}</h4>
+                    )}
+                  </div>
+                  {titlePart && (
+                    <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mt-1">
+                      {descPart}
+                    </p>
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
         </Section>
       )}
 

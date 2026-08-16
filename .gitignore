@@ -4,9 +4,9 @@ npm-debug.log
 
 # Environment variables
 .env
-.env.*
-.env.examples
-.env.example
+.env.local
+.env.*.local
+!.env.example
 
 # Secure files
 *.pem

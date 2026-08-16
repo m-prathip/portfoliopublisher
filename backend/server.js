@@ -6,16 +6,12 @@ const mongoSanitize = require('express-mongo-sanitize');
 const dotenv = require('dotenv');
 const path = require('path');
 const compression = require('compression');
-const { apiLimiter } = require('./middleware/rateLimiters');
+const { apiLimiter, botProtection } = require('./middleware/rateLimiters');
+const securityLogger = require('./utils/securityLogger');
 
 const connectDB = require('./config/db');
 
 dotenv.config();
-console.log("SMTP_HOST =", process.env.SMTP_HOST);
-console.log("SMTP_PORT =", process.env.SMTP_PORT);
-console.log("SMTP_USER =", process.env.SMTP_USER);
-console.log("SMTP_PASS exists =", !!process.env.SMTP_PASS);
-console.log("EMAIL_FROM =", process.env.EMAIL_FROM);
 
 const app = express();
 
@@ -23,14 +19,25 @@ const app = express();
 // see the real client IP and protocol.
 app.set('trust proxy', 1);
 
-// ─── Security headers ──────────────────────────────────
+// ─── Enforce HTTPS in Production ───────────────────────
+app.use((req, res, next) => {
+  if (process.env.NODE_ENV === 'production' && req.headers['x-forwarded-proto'] !== 'https') {
+    return res.redirect(301, `https://${req.headers.host}${req.url}`);
+  }
+  next();
+});
+
+// ─── Security headers (HSTS + Helmet) ──────────────────
 app.use(helmet({
-  crossOriginResourcePolicy: { policy: 'cross-origin' } // allow /uploads to be embedded by the frontend origin
+  crossOriginResourcePolicy: { policy: 'cross-origin' }, // allow /uploads to be embedded by frontend
+  hsts: {
+    maxAge: 31536000, // 1 year
+    includeSubDomains: true,
+    preload: true
+  }
 }));
 
-// ─── CORS (fixed) ──────────────────────────────────────
-// Allow the known frontend origins. If FRONTEND_URL is set, it adds those,
-// but we explicitly include the Vercel app domain to prevent lockouts.
+// ─── CORS ──────────────────────────────────────────────
 const envOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : [];
 const defaultOrigins = ['https://portfoliopublisher.vercel.app', 'http://localhost:5173'];
 const allowedOrigins = [...envOrigins, ...defaultOrigins]
@@ -38,7 +45,6 @@ const allowedOrigins = [...envOrigins, ...defaultOrigins]
 
 app.use(cors({
   origin: (origin, cb) => {
-    // Allow same-origin / curl / server-to-server (no Origin header)
     if (!origin) return cb(null, true);
     if (allowedOrigins.includes(origin.replace(/\/$/, ''))) return cb(null, true);
     return cb(new Error('Not allowed by CORS'));
@@ -46,18 +52,20 @@ app.use(cors({
   credentials: true
 }));
 
+const sanitizeInput = require('./middleware/sanitizeInput');
+
 // ─── Body parsing, compression & sanitization ──────────
 app.use(compression());
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true, limit: '1mb' }));
 app.use(cookieParser());
 app.use(mongoSanitize()); // strips $ and . from keys → blocks NoSQL injection
+app.use(sanitizeInput);   // strips script tags and dangerous HTML → blocks XSS / script injection
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// ─── Routes ────────────────────────────────────────────
-// Apply global API rate limiter to all /api routes
-app.use('/api', apiLimiter);
+// ─── Routes & Anti-Abuse Protection ────────────────────
+app.use('/api', botProtection, apiLimiter);
 
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/profile', require('./routes/profile'));
@@ -74,13 +82,33 @@ app.use('/api/whyhire', require('./routes/whyHire'));
 // Health check
 app.get('/', (req, res) => res.json({ message: 'Portfolio API is running!' }));
 
-// ─── 404 ───────────────────────────────────────────────
-app.use((req, res) => res.status(404).json({ message: 'Route not found' }));
+// ─── 404 Handler & Security Logging ─────────────────────
+app.use((req, res) => {
+  securityLogger.apiError({
+    status: 404,
+    message: 'Route not found',
+    method: req.method,
+    url: req.originalUrl,
+    ip: req.ip || req.headers['x-forwarded-for'],
+    userAgent: req.headers['user-agent']
+  });
+  res.status(404).json({ message: 'Route not found' });
+});
 
-// ─── Error handler (no internal leakage in production) ──
+// ─── Centralized Error Handler ──────────────────────────
 app.use((err, req, res, next) => {
   const status = err.status || 500;
-  if (status >= 500) console.error(err.stack);
+  
+  securityLogger.apiError({
+    status,
+    message: err.message,
+    method: req.method,
+    url: req.originalUrl,
+    ip: req.ip || req.headers['x-forwarded-for'],
+    userAgent: req.headers['user-agent'],
+    stack: err.stack
+  });
+
   const isProd = process.env.NODE_ENV === 'production';
   res.status(status).json({
     message: status >= 500 && isProd ? 'Something went wrong' : err.message
@@ -94,7 +122,6 @@ if (require.main === module) {
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   });
 } else {
-  // Initialize connection for serverless environments (e.g. Vercel)
   connectDB().catch(console.error);
 }
 
