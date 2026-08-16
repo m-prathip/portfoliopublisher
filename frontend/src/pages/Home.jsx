@@ -76,6 +76,8 @@ const Home = () => {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [activeCaseStudy, setActiveCaseStudy] = useState(null);
+  const [selectedSkillCategory, setSelectedSkillCategory] = useState('All');
+  const [activeCardSkillId, setActiveCardSkillId] = useState(null);
 
   useEffect(() => {
     if (profile?.collections) {
@@ -119,6 +121,15 @@ const Home = () => {
       .filter(cat => cat.skills.length > 0)
       .sort((a, b) => a.order - b.order);
   }, [skills]);
+
+  const categoryList = useMemo(() => {
+    return ['All', ...groupedSkills.map(g => g.name)];
+  }, [groupedSkills]);
+
+  const displayedGroupedSkills = useMemo(() => {
+    if (selectedSkillCategory === 'All') return groupedSkills;
+    return groupedSkills.filter(g => g.name === selectedSkillCategory);
+  }, [groupedSkills, selectedSkillCategory]);
 
   const social = profile?.social || {};
   const socialLinks = useMemo(() => [
@@ -372,21 +383,40 @@ const Home = () => {
       {/* ───── SKILLS ───── */}
       {skills.length > 0 && (
         <Section title="Skills Dashboard" subtitle="Technologies I work with" className="bg-mesh-gradient relative overflow-hidden py-16">
-          <div className="max-w-5xl mx-auto space-y-12 relative z-10">
+          <div className="max-w-5xl mx-auto space-y-10 relative z-10">
             
+            {/* Horizontal Scrollable Category Filter Pills for Mobile & Desktop */}
+            {categoryList.length > 2 && (
+              <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-3 pt-1 -mx-2 px-2 scroll-smooth">
+                {categoryList.map((catName) => (
+                  <button
+                    key={catName}
+                    onClick={() => setSelectedSkillCategory(catName)}
+                    className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-200 shrink-0 border ${
+                      selectedSkillCategory === catName
+                        ? 'bg-accent text-white border-accent shadow-md shadow-accent/20 scale-105'
+                        : 'bg-white/80 dark:bg-slate-800/80 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-slate-700 hover:border-accent/40 hover:text-accent'
+                    }`}
+                  >
+                    {catName === 'All' ? '⚡ All Categories' : catName}
+                  </button>
+                ))}
+              </div>
+            )}
+
             {/* Staggered dashboard categories */}
-            <div className="grid md:grid-cols-5 gap-6">
-              {groupedSkills.map((categoryGroup, catIdx) => (
+            <div className="space-y-10">
+              {displayedGroupedSkills.map((categoryGroup, catIdx) => (
                 <motion.div 
                   key={categoryGroup.name}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.5, delay: catIdx * 0.1 }}
-                  className="md:col-span-5 space-y-4"
+                  className="space-y-4"
                 >
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-2 h-2 bg-accent green-bullet-glow rounded-full shrink-0" />
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <span className="w-2.5 h-2.5 bg-accent green-bullet-glow rounded-full shrink-0" />
                     <h3 className="text-sm font-extrabold text-gray-900 dark:text-white uppercase tracking-wider">
                       {categoryGroup.name}
                     </h3>
@@ -397,22 +427,32 @@ const Home = () => {
                     )}
                   </div>
                   
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                     {categoryGroup.skills.map((s, idx) => {
                       const levelName = s.proficiencyLevel || (s.level >= 85 ? 'Expert' : s.level >= 70 ? 'Advanced' : s.level >= 50 ? 'Intermediate' : 'Learning');
                       const expYearsVal = s.yearsOfExperience || (s.level >= 85 ? '4+ Yrs' : s.level >= 70 ? '3 Yrs' : s.level >= 50 ? '2 Yrs' : '1 Yr');
                       const projDetails = s.projectsCount || 'Active production use';
                       const keyAreasVal = s.keyAreas || 'Performance optimization, Clean Code';
+                      const isCardActive = activeCardSkillId === s._id;
+                      
                       return (
                         <motion.div
                           key={s._id}
                           whileHover={{ y: -5, scale: 1.02 }}
-                          className="group relative flex flex-col p-5 rounded-3xl glass-premium-light border gradient-border-green hover-glow-green transition-all duration-300 cursor-pointer overflow-hidden animate-float"
+                          onClick={() => setActiveCardSkillId(isCardActive ? null : s._id)}
+                          className="group relative flex flex-col p-5 rounded-3xl glass-premium-light border gradient-border-green hover-glow-green transition-all duration-300 cursor-pointer overflow-hidden animate-float select-none"
                           style={{ animationDelay: `${idx * 0.5}s` }}
                         >
-                          {/* Hover Tooltip Details */}
-                          <div className="absolute inset-0 bg-black/90 dark:bg-black/95 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center p-5 z-20 text-white">
-                            <h5 className="font-bold text-sm text-accent mb-1">{s.name} Profile</h5>
+                          {/* Desktop Hover / Mobile Tap Details Overlay */}
+                          <div 
+                            className={`absolute inset-0 bg-black/90 dark:bg-black/95 transition-opacity duration-300 flex flex-col justify-center p-5 z-20 text-white ${
+                              isCardActive ? 'opacity-100' : 'hover-desktop-only'
+                            }`}
+                          >
+                            <div className="flex justify-between items-center mb-1">
+                              <h5 className="font-bold text-sm text-accent">{s.name} Profile</h5>
+                              <span className="text-[10px] text-gray-400 font-mono">Tap to close</span>
+                            </div>
                             <ul className="text-[11px] space-y-1 text-gray-300">
                               <li>• Level: <span className="text-white font-semibold">{levelName} ({s.level}%)</span></li>
                               <li>• Est. Experience: <span className="text-white font-semibold">{expYearsVal}</span></li>

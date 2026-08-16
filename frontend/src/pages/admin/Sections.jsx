@@ -85,7 +85,6 @@ export const AdminSkills = () => {
         'Data Structures', 'Algorithms', 'Operating Systems', 'Computer Networks', 'System Design', 'Software Engineering', 'Object-Oriented Programming', 'Computer Architecture'
       ],
       onChangeEffect: (val, form) => {
-        if (form.category) return form; // Keep existing if selected
         const suggested = autoSuggestCategory(val);
         if (suggested) {
           return { ...form, category: suggested };

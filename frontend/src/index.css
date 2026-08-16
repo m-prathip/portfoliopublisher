@@ -555,3 +555,28 @@ html.theme-anim, html.theme-anim *, html.theme-anim *::before, html.theme-anim *
   }
 }
 
+/* Hide scrollbar for clean horizontal category pills */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Hover tooltips only active on desktop pointing devices */
+@media (hover: hover) and (pointer: fine) {
+  .hover-desktop-only {
+    opacity: 0;
+  }
+  .group:hover .hover-desktop-only {
+    opacity: 1;
+  }
+}
+@media (hover: none), (pointer: coarse) {
+  .hover-desktop-only {
+    display: none !important;
+  }
+}
+
+

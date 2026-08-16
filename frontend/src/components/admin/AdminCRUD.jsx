@@ -3,6 +3,7 @@ import { FiPlus, FiEdit2, FiTrash2, FiX, FiCheck } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 import Spinner from '../common/Spinner';
 import { getTechnologyLogo, getTechnologyMetadata } from '../../data/technologyIconRegistry';
+import { getCategoryByNameOrId } from '../../data/skillCategories';
 
 /**
  * Generic admin CRUD table/form component.
@@ -26,7 +27,14 @@ const AdminCRUD = ({ title, items = [], fields = [], api, onRefresh, itemLabel =
 
   const openEdit = (item) => {
     const f = {};
-    fields.forEach(field => f[field.name] = item[field.name] ?? '');
+    fields.forEach(field => {
+      let val = item[field.name] ?? '';
+      if (field.name === 'category' && val) {
+        const catObj = getCategoryByNameOrId(val);
+        if (catObj) val = catObj.name;
+      }
+      f[field.name] = val;
+    });
     setForm(f); setEditing(item); setShowForm(true);
   };
 
@@ -233,7 +241,7 @@ const AdminCRUD = ({ title, items = [], fields = [], api, onRefresh, itemLabel =
                   </div>
                 ))}
               </div>
-              <div className="flex items-center gap-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+              <div className="flex items-center gap-2 flex-shrink-0 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                 <button onClick={() => openEdit(item)}
                   className="p-2 text-gray-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-lg transition-colors">
                   <FiEdit2 size={15} />
