@@ -80,6 +80,11 @@ const BAD_USER_AGENTS = [
 ];
 
 const botProtection = (req, res, next) => {
+  // Allow test runners in test environment
+  if (process.env.NODE_ENV === 'test') {
+    return next();
+  }
+
   const ua = req.headers['user-agent'] || '';
 
   // Block empty user agents on state-changing API endpoints
