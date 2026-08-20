@@ -81,6 +81,7 @@ app.use('/api/whyhire', require('./routes/whyHire'));
 
 // Health check
 app.get('/', (req, res) => res.json({ message: 'Portfolio API is running!' }));
+app.get('/health', (req, res) => res.status(200).json({ status: 'healthy', timestamp: new Date().toISOString() }));
 
 // ─── 404 Handler & Security Logging ─────────────────────
 app.use((req, res) => {

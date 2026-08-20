@@ -2,13 +2,16 @@ const router = require('express').Router();
 const { protect } = require('../middleware/auth');
 const resolveUser = require('../middleware/resolveUser');
 const { forgotLimiter, aiLimiter } = require('../middleware/rateLimiters');
-const { getMyLink, getQRCode } = require('../controllers/portfolioController');
+const { getMyLink, getQRCode, getPublicPortfolio } = require('../controllers/portfolioController');
 const analytics = require('../controllers/analyticsController');
 const assistant = require('../controllers/assistantController');
 
 // Share link + QR code
 router.get('/me/link', protect, getMyLink);
 router.get('/:username/qrcode', resolveUser, getQRCode);
+
+// Public Portfolio Aggregated API
+router.get('/public/:username', resolveUser, getPublicPortfolio);
 
 // Owner analytics (Phase 16)
 router.get('/me/analytics', protect, analytics.getAnalytics);

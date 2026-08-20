@@ -174,6 +174,34 @@ export const portfolioAPI = {
   ask: (u, d) => api.post(`/portfolio/${encodeURIComponent(u)}/assistant`, d)
 };
 
+// ── Public Portfolio Fetch with Retry (Cold-Start Resilience) ──
+export const portfolioPublicAPI = {
+  get: async (u, attempt = 1) => {
+    const maxAttempts = 3;
+    try {
+      // Use a custom axios instance just for this call to increase the timeout to 25s
+      const response = await axios.get(`${BASE_URL}/api/portfolio/public/${encodeURIComponent(u)}`, {
+        timeout: 25000, 
+        headers: { 'Content-Type': 'application/json' }
+      });
+      return response;
+    } catch (error) {
+      const isNetworkError = !error.response;
+      const is5xxError = error.response && error.response.status >= 500;
+      const isTimeout = error.code === 'ECONNABORTED';
+
+      if ((isNetworkError || is5xxError || isTimeout) && attempt < maxAttempts) {
+        // Exponential backoff: 2s, then 4s...
+        const delay = Math.min(2000 * Math.pow(2, attempt - 1), 8000);
+        console.warn(`Attempt ${attempt} failed for /public/${u}. Retrying in ${delay}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return portfolioPublicAPI.get(u, attempt + 1);
+      }
+      throw error;
+    }
+  }
+};
+
 
 
 export default api;

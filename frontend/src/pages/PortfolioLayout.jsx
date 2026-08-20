@@ -5,7 +5,8 @@ import Footer from '../components/layout/Footer';
 import { PageLoader } from '../components/common/Spinner';
 import SceneBackground from '../components/three/SceneBackground';
 import AssistantWidget from '../components/common/AssistantWidget';
-import { profileAPI, portfolioAPI } from '../services/api';
+import { portfolioPublicAPI } from '../services/api';
+import { getCachedPortfolio, setCachedPortfolio } from '../utils/cache';
 import { useTheme } from '../context/ThemeContext';
 import { useBackground } from '../context/BackgroundContext';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -108,11 +109,11 @@ const PortfolioLayout = () => {
   const { setBg } = useBackground();
   const [status, setStatus] = useState('loading');
   const [profile, setProfile] = useState(null);
+  const [isColdStart, setIsColdStart] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-    setStatus('loading');
-
+    
     if (username === 'demo' || username === 'alex') {
       setProfile(MOCK_DEMO_PROFILE);
       setTheme(MOCK_DEMO_PROFILE.theme);
@@ -122,44 +123,87 @@ const PortfolioLayout = () => {
       return;
     }
 
-    profileAPI.getPublic(username)
+    // 1. Check Cache (Stale-While-Revalidate)
+    const cached = getCachedPortfolio(username);
+    if (cached && cached.data) {
+      setProfile(cached.data);
+      if (cached.data.theme) setTheme(cached.data.theme);
+      if (cached.data.background) setBg(cached.data.background);
+      setMode?.(cached.data.mode || 'dark');
+      setStatus(cached.data.isSetup ? 'ready' : 'not-setup');
+      
+      // If it's fresh, we don't strictly need to fetch, but SWR fetches anyway
+      // to keep it perfectly in sync. We'll skip setting 'loading' state.
+    } else {
+      setStatus('loading');
+    }
+
+    // Timer to detect if Render is cold-starting
+    const coldStartTimer = setTimeout(() => {
+      if (status === 'loading' && !cached) setIsColdStart(true);
+    }, 3000);
+
+    // 2. Fetch latest data with retry resilience
+    portfolioPublicAPI.get(username)
       .then((res) => {
         if (cancelled) return;
-        setProfile(res.data);
-        if (res.data.theme) setTheme(res.data.theme);
-        if (res.data.background) setBg(res.data.background);
-        setMode?.(res.data.mode || 'dark'); // Default to dark mode for 3D backgrounds
-        setStatus(res.data.isSetup ? 'ready' : 'not-setup');
+        clearTimeout(coldStartTimer);
+        setIsColdStart(false);
+        
+        const newData = res.data;
+        setProfile(newData);
+        if (newData.theme) setTheme(newData.theme);
+        if (newData.background) setBg(newData.background);
+        setMode?.(newData.mode || 'dark');
+        
+        const isSetup = newData.isSetup;
+        setStatus(isSetup ? 'ready' : 'not-setup');
+        
+        if (isSetup) {
+          setCachedPortfolio(username, newData);
+        }
       })
       .catch((err) => {
         if (cancelled) return;
-        if (username === 'demo') {
-          setProfile(MOCK_DEMO_PROFILE);
-          setTheme(MOCK_DEMO_PROFILE.theme);
-          setBg(MOCK_DEMO_PROFILE.background);
-          setMode?.(MOCK_DEMO_PROFILE.mode || 'dark');
-          setStatus('ready');
+        clearTimeout(coldStartTimer);
+        setIsColdStart(false);
+
+        // If we have cached data, we just keep showing it silently failing the background refresh
+        if (cached && cached.data) return;
+
+        if (err.response?.status === 404) {
+          setStatus('not-found');
         } else {
-          if (err.response?.status === 404) {
-            setStatus('not-found');
-          } else {
-            setStatus('error');
-          }
+          setStatus('error');
         }
       });
-    return () => { cancelled = true; };
+
+    return () => { 
+      cancelled = true; 
+      clearTimeout(coldStartTimer);
+    };
   }, [username]);
-
-
 
   useEffect(() => {
     document.title = profile?.name ? `${profile.name} — Portfolio` : 'Portfolio';
   }, [profile]);
 
-  if (status === 'loading') return <PageLoader />;
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-900 px-4 text-center">
+        <PageLoader />
+        {isColdStart && (
+          <div className="mt-8 text-gray-500 dark:text-gray-400 animate-pulse">
+            <p className="font-semibold mb-1">Waking up the server...</p>
+            <p className="text-sm">This is a free tier backend and may take 15-30 seconds to cold start.</p>
+          </div>
+        )}
+      </div>
+    );
+  }
   if (status === 'not-found') return <EmptyState title="Portfolio not found" text={`There's no portfolio at @${username}.`} />;
   if (status === 'not-setup') return <EmptyState title="Still under construction" text={`@${username} hasn't published their portfolio yet — check back soon.`} />;
-  if (status === 'error') return <EmptyState title="Temporary Error" text={`We couldn't load @${username}'s portfolio right now. Please refresh the page or try again later.`} />;
+  if (status === 'error') return <EmptyState title="Temporary Error" text={`We couldn't load @${username}'s portfolio right now. The server might be temporarily overloaded. Please refresh the page in a few seconds.`} />;
 
   return (
     <div className="flex flex-col min-h-screen relative">
